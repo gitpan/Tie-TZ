@@ -1,0 +1,35 @@
+# Copyright 2008 Kevin Ryde
+
+# This file is part of Tie-TZ.
+#
+# Tie-TZ is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3, or (at your option)
+# any later version.
+#
+# Tie-TZ is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Tie-TZ.  If not, see <http://www.gnu.org/licenses/>.
+
+Source: libtie-tz-perl
+Section: perl
+Priority: optional
+Build-Depends: cdbs, debhelper (>= 4)
+Maintainer: Kevin Ryde <user42@zip.com.au>
+Standards-Version: 3.8.0
+Homepage: http://www.geocities.com/user42_kevin/tie-tz/index.html
+Bugs: mailto:user42@zip.com.au
+
+Package: libtie-tz-perl
+Architecture: all
+Depends: perl
+Description: Tied TZ variable calling tzset on changes
+ Tie::TZ creates a $TZ variable which gets and sets $ENV{'TZ'} and on
+ setting calls POSIX::tzset() to ensure C library functions like
+ localtime() notice the change.  (Something which a good C library may
+ do itself, and Perl generally can do for its calls, but in other
+ circumstances is important.)

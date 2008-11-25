@@ -1,0 +1,44 @@
+This file contains message digests of all files listed in MANIFEST,
+signed via the Module::Signature module, version 0.55.
+
+To verify the content in this distribution, first make sure you have
+Module::Signature installed, then type:
+
+    % cpansign -v
+
+It will check each file's integrity, as well as the signature's
+validity.  If "==> Signature verified OK! <==" is not displayed,
+the distribution may already have been compromised, and you should
+not run its Makefile.PL or Build.PL.
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+SHA1 8624bcdae55baeef00cd11d5dfcfa60f68710a02 COPYING
+SHA1 54db9582e4a8640a4c37a87da5be1dbe727214a9 Changes
+SHA1 d6c88598eb400ca1491a83f66254a3c486b0bf84 MANIFEST
+SHA1 98fab4f0c0673bef3374eab29fdf34d2165048e6 MANIFEST.SKIP
+SHA1 783849ab83b3bff8055ddc7fac29dda2d0266716 META.yml
+SHA1 6f6e01ce14d6df26e0b0ad6d6fd26bd4554b65b3 Makefile.PL
+SHA1 4e3666923cc2699859ee54d992d052f4b8a67189 debian/changelog
+SHA1 1b6453892473a467d07372d45eb05abc2031647a debian/compat
+SHA1 d2fa5eca43b8e91a6ea3ed10aed71eb1d88d1c5a debian/control
+SHA1 8fad985c74fc72fd1107c26d2dd78172754358d4 debian/copyright
+SHA1 7a8f115bdd637dd88096098dac5bcb826a217687 debian/rules
+SHA1 430fd78a64ed5684c553102b337cb86a2468b231 debian/watch
+SHA1 f90ece2cd06ed8445d8a47d18cec4120a6bdc02d devel/datecalc.pl
+SHA1 d62d83a22866dfab5dc50ed51e8d2ddf83c0ae71 devel/run.pl
+SHA1 3b4b5058c0d64c8895cc1ec6a35ffa225057bb08 devel/speed.pl
+SHA1 5aebc64c353d50e95defd64b57ceebc1df645a04 examples/demo.pl
+SHA1 6f0de27cb733601f4d18ba9e02538476258f9e54 junk/SelectTZ.pm
+SHA1 d83347cb9e13c8dc63141463de9a9033a3554a28 lib/Tie/TZ.pm
+SHA1 ef9e8e1e93ee05cbc18892afda98b64d0561f976 t/TieTZ.t
+SHA1 259c4cafe9400b585e88ea0984aee7b8600909b1 t/TieTZimport.t
+SHA1 a661a39e55a4127aecb1b97a631c4f01f7dce8c6 t/pod.t
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iD8DBQFJK6V2LFMCIV9q3ToRArd+AJ0UrApW3Awx54IcVGuQAMTKIEUKrwCggoOp
+ftkF3BLKakFtfAWH8dmZkDo=
+=iWoa
+-----END PGP SIGNATURE-----
