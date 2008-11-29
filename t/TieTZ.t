@@ -20,21 +20,22 @@
 use strict;
 use warnings;
 use Tie::TZ;
-use Test::More tests => 45;
+use Test::More tests => 43;
 
 ok ($Tie::TZ::VERSION >= 1);
 ok (Tie::TZ->VERSION  >= 1);
 
 
-diag ('delete ENV');
+diag ('set: delete ENV');
 { delete $ENV{'TZ'};
   my $got = $Tie::TZ::TZ;
   is ($ENV{'TZ'}, undef);
+  ok (! exists $ENV{'TZ'});
   is ($got, undef);
   is ($Tie::TZ::TZ, undef);
 }
 
-diag ('ENV = GMT');
+diag ('set: $ENV = GMT');
 { $ENV{'TZ'} = 'GMT';
   my $got = $Tie::TZ::TZ;
   is ($ENV{'TZ'}, 'GMT');
@@ -42,15 +43,19 @@ diag ('ENV = GMT');
   is ($Tie::TZ::TZ, 'GMT');
 }
 
-diag ('ENV = undef');
-{ $ENV{'TZ'} = undef;
-  my $got = $Tie::TZ::TZ;
-  is ($ENV{'TZ'}, undef);
-  is ($got, undef);
-  is ($Tie::TZ::TZ, undef);
-}
+# Assigning undef into %ENV provokes a warning "Use of uninitialized value
+# in scalar assignment" prior to perl 5.10, or some such.  Guess undef has
+# no meaning for putenv, though the Tie::TZ code should be ok on it.
+#
+# diag ('set: $ENV = undef');
+# { $ENV{'TZ'} = undef;
+#   my $got = $Tie::TZ::TZ;
+#   is ($ENV{'TZ'}, undef);
+#   is ($got, undef);
+#   is ($Tie::TZ::TZ, undef);
+# }
 
-diag ('TZ = UTC');
+diag ('set: $TZ = UTC');
 { $Tie::TZ::TZ = 'UTC';
   my $got = $Tie::TZ::TZ;
   is ($ENV{'TZ'}, 'UTC');
@@ -58,7 +63,7 @@ diag ('TZ = UTC');
   is ($Tie::TZ::TZ, 'UTC');
 }
 
-diag ('TZ = GMT');
+diag ('set: $TZ = GMT');
 { $Tie::TZ::TZ = 'GMT';
   my $got = $Tie::TZ::TZ;
   is ($ENV{'TZ'}, 'GMT');
@@ -66,15 +71,16 @@ diag ('TZ = GMT');
   is ($Tie::TZ::TZ, 'GMT');
 }
 
-diag ('TZ = undef');
+diag ('set: $TZ = undef');
 { $Tie::TZ::TZ = undef;
   my $got = $Tie::TZ::TZ;
-  ok (! exists $ENV{'TZ'});
+  ok (! exists $ENV{'TZ'},
+     'assigning undef to $TZ deletes from $ENV');
   is ($got, undef);
   is ($Tie::TZ::TZ, undef);
 }
 
-diag ('ENV = UTC, local TZ = GMT, local TZ = EST');
+diag ('set ENV = UTC, then local TZ = GMT, then local TZ = EST');
 $ENV{'TZ'} = 'UTC';
 { { local $Tie::TZ::TZ = 'GMT';
     my $got = $Tie::TZ::TZ;
@@ -100,7 +106,7 @@ $ENV{'TZ'} = 'UTC';
   is ($Tie::TZ::TZ, 'UTC');
 }
 
-diag ('ENV = UTC, local TZ = GMT, with die out of eval');
+diag ('set ENV = UTC, then local TZ = GMT, with die out of eval');
 { $ENV{'TZ'} = 'UTC';
   eval { local $Tie::TZ::TZ = 'GMT';
          my $got = $Tie::TZ::TZ;
@@ -125,29 +131,29 @@ diag ('ENV = UTC, local TZ = GMT, with die out of eval');
   $ENV{'TZ'} = 'UTC';
   { $saw_tzset = 0;
     $Tie::TZ::TZ = 'UTC';
-    is ($saw_tzset, 0, 'UTC -> UTC');
+    is ($saw_tzset, 0, 'UTC -> UTC, should not tzset');
   }
   { $saw_tzset = 0;
     $Tie::TZ::TZ = 'GMT';
-    is ($saw_tzset, 1, 'UTC -> GMT');
+    is ($saw_tzset, 1, 'UTC -> GMT, should tzset');
   }
   { $saw_tzset = 0;
     $Tie::TZ::TZ = undef;
-    is ($saw_tzset, 1, 'GMT -> undef');
+    is ($saw_tzset, 1, 'GMT -> undef, should tzset');
   }
   { $saw_tzset = 0;
     $Tie::TZ::TZ = undef;
-    is ($saw_tzset, 0, 'undef -> undef');
+    is ($saw_tzset, 0, 'undef -> undef, should not tzset');
   }
   { $saw_tzset = 0;
     $Tie::TZ::TZ = 'UTC';
-    is ($saw_tzset, 1, 'undef -> UTC');
+    is ($saw_tzset, 1, 'undef -> UTC, should tzset');
   }
 }
 
-# Return true if setting $ENV{'TZ'} does indeed affect what localtime()
-# returns.  As noted in the "perlport" pod, on some systems TZ might have no
-# effect at all.
+# Return true if setting $ENV{'TZ'} affects what localtime() returns.  As
+# noted in the "perlport" pod on some systems TZ might have no effect at
+# all.
 #
 sub tz_affects_localtime {
   require POSIX;
@@ -162,31 +168,26 @@ sub tz_affects_localtime {
   return ($gmt_hour != $bst_hour);
 }
 
-# check that a mere "local $ENV{TZ}" affects localtime, since that's all we
-# do in the code; though 
-{
- SKIP: {
-    if (! tz_affects_localtime()) {
-      skip 'due to TZ variable having no effect', 2;
-    }
-
-    # assuming localtime() is indeed influenced, see that for example BST+1
-    # is an hour behind GMT
-    #
-    $Tie::TZ::TZ = 'GMT';
-    my (undef, undef, $gmt_hour) = localtime (0);
-    my $bst_hour;
-    { local $ENV{'TZ'} = 'BST+1';
-      (undef, undef, $bst_hour) = localtime (0);
-      is ($bst_hour, ($gmt_hour - 1 + 24) % 24,
-          'BST+1 within local Tie::TZ setting');
-    }
-    my (undef, undef, $gmt_again_hour) = localtime (0);
-    is ($gmt_again_hour, $gmt_hour,
-        'GMT hour before and after local Tie::TZ setting');
-
+SKIP: {
+  if (! tz_affects_localtime()) {
+    skip 'due to TZ variable having no effect on localtime()', 2;
   }
-  POSIX::tzset();
+
+  # This could be slightly rash on very weird systems, but if BST+1 is
+  # different from GMT then it seems fair to assume it's by 1 hour.  The
+  # benefit of the test is that it's a real actual run to see assigning
+  # through Tie::TZ has the intended effect on localtime().
+  #
+  $Tie::TZ::TZ = 'GMT';
+  my (undef, undef, $gmt_hour) = localtime (0);
+  { local $Tie::TZ::TZ = 'BST+1';
+    my (undef, undef, $bst_hour) = localtime (0);
+    is ($bst_hour, ($gmt_hour - 1 + 24) % 24,
+        'BST+1 within local Tie::TZ setting');
+  }
+  my (undef, undef, $gmt_again_hour) = localtime (0);
+  is ($gmt_again_hour, $gmt_hour,
+      'GMT hour before and after local Tie::TZ setting');
 }
 
 exit 0;

@@ -25,7 +25,7 @@ use vars qw(@ISA @EXPORT_OK $TZ $VERSION);
 @EXPORT_OK = qw($TZ);
 tie $TZ, __PACKAGE__;
 
-$VERSION = 1;
+$VERSION = 2;
 
 use constant DEBUG => 0;
 
@@ -92,10 +92,11 @@ the C library notices the change for subsequent C<localtime>, etc.
     $TZ = 'GMT';
     # does  $ENV{'TZ'} = 'GMT';  POSIX::tzset();
 
-For a plain set you can just as easily store and C<tzset> yourself.  The
-power comes when using C<local> to have a different timezone temporarily.
-Any C<goto>, C<return>, C<die>, etc, exiting the block will restore the old
-setting and do C<tzset>.
+For a plain set you can just as easily store and C<tzset> yourself (or have
+a function to do the combo).  The power of a tied variable comes when using
+C<local> to have a different timezone temporarily.  Any C<goto>, C<return>,
+C<die>, etc, exiting the block will restore the old setting, including a
+C<tzset> for it.
 
     { local $TZ = 'GMT';
       print ctime();
@@ -107,25 +108,30 @@ setting and do C<tzset>.
       # TZ restored when the die unwinds
     }
 
+Storing C<undef> to C<$TZ> deletes C<$ENV{'TZ'}>, unsetting the environment
+variable.  This generally means the timezone goes back to the system default
+local time (usually per from F</etc/timezone>).
+
 As an optimization, if a store to C<$TZ> is already what C<$ENV{'TZ'}>
-contains then C<tzset> is not called.  This is helpful when some settings
-you're working with might be all the same.  If there's never any changes
-applied then C<POSIX> module is not even loaded at all.
+contains then C<tzset> is not called.  This is helpful if some of the
+settings you're working are all the same.  If there's never any different
+value applied then C<POSIX> module is not even loaded at all.
 
 =head2 Uses
 
 Quite often C<tzset> is not actually needed.  Decent C libraries look for a
-new TZ each time in the various C<localtime> etc.  But C<tzset> keeps you
-out of trouble on older systems, or with any external libraries directly
-accessing the C<tzname> and C<daylight> global variables.
+new TZ each time in the various C<localtime> etc functions.  But C<tzset>
+keeps you out of trouble on older systems, or with any external libraries
+directly accessing the C global variables like C<timezone> or C<daylight>.
 
 Perl's own calls to C<localtime> etc do a C<tzset> themselves where
-necessary (based on a configure test, see L<Config>) to cope with old C
-libraries.  But Perl doesn't that on C<localtime_r> until 5.8.9 (or some
-such), and the latter in fact in some versions of GNU C can need an explicit
-C<tzset>; the net result being that you need C<tzset> in a threaded Perl
-5.8.8 (even when not using threads).  Of course even if Perl recognises C
-library limitations you might not be so lucky deep in external libraries.
+necessary to cope with old C libraries (based on a configure test, see
+L<Config>).  However in 5.8.8 and earlier Perl didn't do that on
+C<localtime_r>, and the latter in some versions of GNU C can need an
+explicit C<tzset>; the net result being that you need C<tzset> in threaded
+Perl 5.8.8 (whether using threads or not).  Of course even when Perl
+recognises C library limitations you might not be so lucky deep in external
+libraries.
 
 =head1 EXPORTS
 
@@ -135,22 +141,28 @@ C<$Tie::TZ::TZ>,
     use Tie::TZ;
     $Tie::TZ::TZ = 'GMT';
 
-Or import C<$TZ> in the usual way (see L<Exporter>) as a convenient
-shorthand
+Or import C<$TZ> in the usual way (see L<Exporter>) as a shorthand
 
     use Tie::TZ '$TZ';
     $TZ = 'GMT';
 
 =head1 OTHER NOTES
 
-When you get sick of the C library's fairly ordinary timezone handling have
-a look at L<DateTime::TimeZone>.  Its data tables make it big, though no
-doubt you can turf what you don't use.  It's all Perl and can be a lot
-friendlier if you're working in multiple zones more or less simultaneously.
+The C<local> trick above of course works with C<$ENV{'TZ'}> directly too if
+you're happy that you don't need C<tzset>, eg. C<< local $ENV{'TZ'} =
+'EST+10' >>.  The C<Env> module can let you tie a C<$TZ> name for that too
+if desired.  However C<undef> ends up meaning an empty string instead of
+unset, which may be subtly different, and it also provokes a warning from
+Perl prior to 5.10.
+
+When you get sick of the C library timezone handling have a look at
+L<DateTime::TimeZone>.  Its data tables make it big (though no doubt you
+could turf what you don't use) but it's all Perl and is much friendlier if
+you're working in multiple zones more or less simultaneously.
 
 =head1 SEE ALSO
 
-L<POSIX>
+L<POSIX>, L<Env>, L<DateTime::TimeZone>
 
 =head1 HOME PAGE
 

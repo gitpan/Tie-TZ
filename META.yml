@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:                Tie-TZ
-version:             1
+version:             2
 abstract:            Tied TZ env var calling tzset() when changed.
 license:             gpl
 author:              
@@ -14,5 +14,6 @@ meta-spec:
 no_index:
     directory:
         - devel
+        - junk
 resources:
     homepage: http://www.geocities.com/user42_kevin/tie-tz/index.html

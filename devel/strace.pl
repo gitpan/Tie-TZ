@@ -18,23 +18,16 @@
 # with Tie-TZ.  If not, see <http://www.gnu.org/licenses/>.
 
 
-# Usage: ./demo.pl
-#
-
 use strict;
 use warnings;
-use Tie::TZ qw($TZ);
-use POSIX ('ctime');
+use POSIX ();
 
-print "Local:  ", ctime(time());
+foreach (1 .. 5) {
+  $ENV{'TZ'} = 'Europe/London';
+  POSIX::tzset();
 
-$TZ = 'GMT';
-print "GMT:    ", ctime(time());
-
-$TZ = 'FOO+10';
-print "FOO+10: ", ctime(time());
-
-$TZ = 'BAR-10';
-print "BAR-10: ", ctime(time());
+  $ENV{'TZ'} = 'America/New_York';
+  POSIX::tzset();
+}
 
 exit 0;

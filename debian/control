@@ -31,5 +31,5 @@ Description: Tied TZ variable calling tzset on changes
  Tie::TZ creates a $TZ variable which gets and sets $ENV{'TZ'} and on
  setting calls POSIX::tzset() to ensure C library functions like
  localtime() notice the change.  (Something which a good C library may
- do itself, and Perl generally can do for its calls, but in other
+ do itself, and Perl generally can do for its own calls, but in other
  circumstances is important.)

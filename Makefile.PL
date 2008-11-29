@@ -36,6 +36,7 @@ WriteMakefile
 no_index:
     directory:
         - devel
+        - junk
 resources:
     homepage: http://www.geocities.com/user42_kevin/tie-tz/index.html
 HERE

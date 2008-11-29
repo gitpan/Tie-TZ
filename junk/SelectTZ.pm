@@ -18,18 +18,19 @@
 
 
 # This was idea for a scope-based object which sat on an old value, and
-# tzset on restoring it, like
+# would tzset on restoring it, like
 #
 #    { my $selector = SelectTZ->new ('GMT');
 #      do_something_in_gmt();
 #      ...
 #    }
 #
-# slightly in the style of SelectSaver.pm for current output filehandle.
+# a bit in the style of SelectSaver.pm for the "select" current output
+# filehandle.
 #
-# The danger is if you don't properly nest your selectors, you could end up
-# with the wrong "old" value restored.  The "local $TZ" in Tie::TZ lets Perl
-# get the restore order right.
+# The danger is if you don't properly nest your selectors then you could end
+# up with the wrong "old" value restored.  The "local $TZ" in Tie::TZ lets
+# Perl get the restore order right.
 #
 
 

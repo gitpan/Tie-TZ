@@ -21,6 +21,12 @@
 #
 # Measure the relative speeds of Tie::TZ and DateTime::TimeZone.
 #
+# For me DateTime is about 3.5 times faster in a hard loop like this.  One
+# of the worst things about glibc is that it re-reads a /usr/share/zoneinfo/
+# file on every change.  Probably that's not too bad for the normal case of
+# relatively few zone changes in a program, but if you're going around the
+# world it makes DateTime a much more likely proposition.
+#
 
 use strict;
 use warnings;
@@ -70,7 +76,7 @@ print "Tie::TZ\n";
 my $tz = 'Europe/London';
 my $tie_tz_each = speed (sub { local $Tie::TZ::TZ = $tz; return 0; });
 
-# about 0.35ms each
+# about 0.36ms each
 print "DateTime::TimeZone\n";
 $tz = DateTime::TimeZone->new (name => 'Europe/London');
 my $dt = DateTime->now();
@@ -81,6 +87,14 @@ if ($tie_tz_each > $datetime_each) {
 } else {
   printf "TZ is %.2f times faster\n", $datetime_each / $tie_tz_each;
 }
+
+
+use Benchmark ':hireswallclock';
+my $bench = {'Tie::TZ' => sub { local $Tie::TZ::TZ = $tz; return 0; },
+             'DateTime::TimeZone' => sub { $tz->offset_for_datetime($dt) },
+            };
+Benchmark::timethese (-5, $bench);
+Benchmark::cmpthese (-5, $bench);
 
 
 exit 0;

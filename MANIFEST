@@ -9,6 +9,8 @@ debian/watch
 devel/datecalc.pl
 devel/run.pl
 devel/speed.pl
+devel/strace.pl
+devel/undef.pl
 examples/demo.pl
 junk/SelectTZ.pm
 lib/Tie/TZ.pm
