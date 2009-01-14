@@ -20,5 +20,6 @@ MANIFEST.SKIP
 SIGNATURE
 t/pod.t
 t/TieTZ.t
+t/TieTZimport-all.t
 t/TieTZimport.t
 META.yml                                 Module meta-data (added by MakeMaker)

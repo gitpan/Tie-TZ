@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-# Copyright 2008, 2009 Kevin Ryde
+# Copyright 2009 Kevin Ryde
 
 # This file is part of Tie-TZ.
 #
@@ -18,27 +18,14 @@
 # with Tie-TZ.  If not, see <http://www.gnu.org/licenses/>.
 
 
-# Usage: ./demo.pl
-#
-
 use strict;
 use warnings;
-use Tie::TZ qw($TZ);
-use POSIX ('ctime');
+use Tie::TZ ':all';
+use Test::More tests => 1;
 
-print "Default: ", ctime(time());
-
-$TZ = 'GMT';
-print "GMT:     ", ctime(time());
-
-$TZ = 'FOO+10';
-print "FOO+10:  ", ctime(time());
-
-{ local $TZ = 'BAR-10';
-  print "BAR-10:  ", ctime(time());
+{ $ENV{'TZ'} = 'GMT';
+  $TZ = 'UTC';
+  is ($ENV{'TZ'}, 'UTC');
 }
-
-# and $TZ is restored automatically the "local" block, so back to FOO+10
-print "FOO+10:  ", ctime(time());
 
 exit 0;

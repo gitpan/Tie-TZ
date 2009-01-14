@@ -38,7 +38,7 @@ use Tie::TZ;
 use DateTime;
 use DateTime::TimeZone;
 
-use constant TARGET_DURATION => 2; # seconds
+use constant TARGET_DURATION => 5; # seconds
 
 sub speed {
   my ($subr) = @_;
@@ -55,9 +55,9 @@ sub speed {
     }
     my $e = Time::HiRes::time();
     $t = $e - $s;
-    my $each = $t/$runs;
-    my $ms = $each * 1000.0;
-    printf " took %.6f, is %.3f milliseconds each\n", $t, $ms;
+    my $each = $t / $runs;
+    printf " took %.6f, is %.3f milliseconds each, %.1f/sec\n",
+      $t, $each * 1000.0, 1.0 / $each;
 
     if ($t > TARGET_DURATION) {
       last;
@@ -65,7 +65,7 @@ sub speed {
     if ($t == 0) {
       $runs *= 5;
     } else {
-      $runs = max ($runs * 2, POSIX::ceil((TARGET_DURATION + 1) / $t));
+      $runs = max ($runs * 2, POSIX::ceil(TARGET_DURATION * 1.05 / $t));
     }
   }
   return $t / $runs;
@@ -73,14 +73,16 @@ sub speed {
 
 # about 1.13ms each
 print "Tie::TZ\n";
-my $tz = 'Europe/London';
-my $tie_tz_each = speed (sub { local $Tie::TZ::TZ = $tz; return 0; });
+$Tie::TZ::TZ = 'America/New_York';
+my $tz_func = sub { local $Tie::TZ::TZ = 'Europe/London'; return 0 };
+my $tie_tz_each = speed ($tz_func);
 
 # about 0.36ms each
 print "DateTime::TimeZone\n";
-$tz = DateTime::TimeZone->new (name => 'Europe/London');
+my $dttz = DateTime::TimeZone->new (name => 'Europe/London');
 my $dt = DateTime->now();
-my $datetime_each = speed (sub { $tz->offset_for_datetime($dt) });
+my $dt_func = sub { $dttz->offset_for_datetime($dt) };
+my $datetime_each = speed ($dt_func);
 
 if ($tie_tz_each > $datetime_each) {
   printf "DateTime is %.2f times faster\n", $tie_tz_each / $datetime_each;
@@ -89,9 +91,10 @@ if ($tie_tz_each > $datetime_each) {
 }
 
 
+print "\n";
 use Benchmark ':hireswallclock';
-my $bench = {'Tie::TZ' => sub { local $Tie::TZ::TZ = $tz; return 0; },
-             'DateTime::TimeZone' => sub { $tz->offset_for_datetime($dt) },
+my $bench = {'Tie::TZ'            => $tz_func,
+             'DateTime::TimeZone' => $dt_func,
             };
 Benchmark::timethese (-5, $bench);
 Benchmark::cmpthese (-5, $bench);

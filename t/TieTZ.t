@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-# Copyright 2008 Kevin Ryde
+# Copyright 2008, 2009 Kevin Ryde
 
 # This file is part of Tie-TZ.
 #
@@ -22,8 +22,10 @@ use warnings;
 use Tie::TZ;
 use Test::More tests => 43;
 
-ok ($Tie::TZ::VERSION >= 1);
-ok (Tie::TZ->VERSION  >= 1);
+my $want_version = 3;
+ok ($Tie::TZ::VERSION >= $want_version);
+ok (Tie::TZ->VERSION  >= $want_version);
+Tie::TZ->VERSION ($want_version);
 
 
 diag ('set: delete ENV');

@@ -15,6 +15,11 @@
 # You should have received a copy of the GNU General Public License
 # along with Tie-TZ.  If not, see <http://www.gnu.org/licenses/>.
 
+
+# "libtest-pod-perl (>= 1.00)" could be in Build-Depends for more
+# tests, but it's optional and just makes the build tools drag in more
+# stuff.
+
 Source: libtie-tz-perl
 Section: perl
 Priority: optional
@@ -26,7 +31,7 @@ Bugs: mailto:user42@zip.com.au
 
 Package: libtie-tz-perl
 Architecture: all
-Depends: perl
+Depends: perl, ${misc:Depends}
 Description: Tied TZ variable calling tzset on changes
  Tie::TZ creates a $TZ variable which gets and sets $ENV{'TZ'} and on
  setting calls POSIX::tzset() to ensure C library functions like

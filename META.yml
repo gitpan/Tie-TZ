@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:                Tie-TZ
-version:             2
+version:             3
 abstract:            Tied TZ env var calling tzset() when changed.
 license:             gpl
 author:              
@@ -8,12 +8,16 @@ author:
 generated_by:        ExtUtils::MakeMaker version 6.42
 distribution_type:   module
 requires:     
+    Test::More:                    0
 meta-spec:
     url:     http://module-build.sourceforge.net/META-spec-v1.3.html
     version: 1.3
+recommends:
+    Test::Pod: 1.00
 no_index:
     directory:
         - devel
         - junk
 resources:
     homepage: http://www.geocities.com/user42_kevin/tie-tz/index.html
+    license: http://www.gnu.org/licenses/#GPL

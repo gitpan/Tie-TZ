@@ -26,6 +26,7 @@ WriteMakefile
    ABSTRACT     => 'Tied TZ env var calling tzset() when changed.',
    VERSION_FROM => 'lib/Tie/TZ.pm',
    PREREQ_PM    => {
+                    'Test::More' => 0
                    },
 
    AUTHOR       => 'Kevin Ryde <user42@zip.com.au>',
@@ -33,12 +34,15 @@ WriteMakefile
    SIGN         => 1,
 
    EXTRA_META => <<'HERE',
+recommends:
+    Test::Pod: 1.00
 no_index:
     directory:
         - devel
         - junk
 resources:
     homepage: http://www.geocities.com/user42_kevin/tie-tz/index.html
+    license: http://www.gnu.org/licenses/#GPL
 HERE
   );
 
@@ -51,6 +55,8 @@ lint:
 	podchecker    $(LINT_FILES)
 pc:
 	perlcritic $(LINT_FILES)
+unused:
+	for i in $(LINT_FILES); do perl -Mwarnings::unused -I lib $$i; done
 
 myman:
 	mv MANIFEST MANIFEST.old
@@ -72,7 +78,7 @@ copyright-years-check:
 	  while read i; do \
 	    case $$i in \
 	      '' | */ \
-	      | debian/changelog | debian/compat | debian/control \
+	      | debian/changelog | debian/compat \
 	      | t/pod.t \
 	      | COPYING | MANIFEST* | SIGNATURE | META.yml) \
 	      continue ;; \

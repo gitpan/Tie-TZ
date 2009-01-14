@@ -1,4 +1,4 @@
-# Copyright 2007, 2008 Kevin Ryde
+# Copyright 2007, 2008, 2009 Kevin Ryde
 
 # This file is part of Tie-TZ.
 #
@@ -17,20 +17,20 @@
 
 
 
-# This was idea for a scope-based object which sat on an old value, and
-# would tzset on restoring it, like
+# This was an idea for a scope-based object sitting on an old value, doing a
+# tzset on setting and restoring,
 #
 #    { my $selector = SelectTZ->new ('GMT');
 #      do_something_in_gmt();
 #      ...
 #    }
 #
-# a bit in the style of SelectSaver.pm for the "select" current output
+# a little in the style of SelectSaver.pm for the "select()" current output
 # filehandle.
 #
-# The danger is if you don't properly nest your selectors then you could end
-# up with the wrong "old" value restored.  The "local $TZ" in Tie::TZ lets
-# Perl get the restore order right.
+# The danger is that if you don't properly nest your selectors then you
+# could end up with the wrong "old" value restored.  The "local $TZ" in
+# Tie::TZ lets Perl handle the restore order.
 #
 
 
