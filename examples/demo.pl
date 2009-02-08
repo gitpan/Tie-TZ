@@ -38,7 +38,7 @@ print "FOO+10:  ", ctime(time());
   print "BAR-10:  ", ctime(time());
 }
 
-# and $TZ is restored automatically the "local" block, so back to FOO+10
+# and $TZ is restored automatically outside the "local", so back to FOO+10
 print "FOO+10:  ", ctime(time());
 
 exit 0;

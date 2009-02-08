@@ -17,6 +17,9 @@ with Tie-TZ.  If not, see <http://www.gnu.org/licenses/>.
 
 
 
+Version 4, February 2009
+    - skip tzset() on old systems without that func
+
 Version 3, January 2009
     - add :all export
 

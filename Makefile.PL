@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-# Copyright 2008 Kevin Ryde
+# Copyright 2008, 2009 Kevin Ryde
 
 # This file is part of Tie-TZ.
 #
@@ -34,12 +34,16 @@ WriteMakefile
    SIGN         => 1,
 
    EXTRA_META => <<'HERE',
-recommends:
-    Test::Pod: 1.00
+optional_features:
+    maximum_tests:
+        description: Have "make test" do as much as possible.
+        requires:
+            Test::Pod: 1.00
 no_index:
     directory:
         - devel
         - junk
+        - t
 resources:
     homepage: http://www.geocities.com/user42_kevin/tie-tz/index.html
     license: http://www.gnu.org/licenses/#GPL
@@ -52,8 +56,8 @@ sub MY::postamble {
 LINT_FILES = $(TO_INST_PM) t/*.t examples/*.pl devel/*.pl
 lint:
 	perl -MO=Lint $(LINT_FILES)
-	podchecker    $(LINT_FILES)
 pc:
+	-podchecker $(LINT_FILES)
 	perlcritic $(LINT_FILES)
 unused:
 	for i in $(LINT_FILES); do perl -Mwarnings::unused -I lib $$i; done

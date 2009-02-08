@@ -6,10 +6,14 @@ debian/control
 debian/copyright
 debian/rules
 debian/watch
+devel/byname.pl
 devel/datecalc.pl
 devel/run.pl
 devel/speed.pl
 devel/strace.pl
+devel/TestTzsetNotImplemented.pm
+devel/tz.c
+devel/tzset.pl
 devel/undef.pl
 examples/demo.pl
 junk/SelectTZ.pm
@@ -22,4 +26,7 @@ t/pod.t
 t/TieTZ.t
 t/TieTZimport-all.t
 t/TieTZimport.t
+t/tzset-calls.t
+t/tzset-not-implemented.t
+t/tzset-other-error.t
 META.yml                                 Module meta-data (added by MakeMaker)

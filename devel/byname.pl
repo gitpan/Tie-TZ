@@ -1,4 +1,6 @@
-# Copyright 2008, 2009 Kevin Ryde
+#!/usr/bin/perl
+
+# Copyright 2009 Kevin Ryde
 
 # This file is part of Tie-TZ.
 #
@@ -15,22 +17,37 @@
 # You should have received a copy of the GNU General Public License along
 # with Tie-TZ.  If not, see <http://www.gnu.org/licenses/>.
 
-^#
-/#
-/\.#
-~$
-^\.#
-\.old$
-\.bak$
-^Makefile$
-\.tar\.gz$
-^backup
-^misc
-^blib
-^pm_to_blib
-^Tie-TZ
-\.deb$
-dist-deb
-^maybe
-^samples
-^msg
+
+use strict;
+use warnings;
+use POSIX ('tzset');
+
+sub foo {
+  print "foo\n";
+}
+sub bar {
+  print "bar\n";
+}
+sub other {
+  print "other\n";
+}
+sub call {
+  foo ();
+}
+call();
+*foo = *bar;
+call();
+*foo = sub { print "quux\n"; };
+call();
+*foo = *other;
+call();
+bar();
+
+print "imported tzset ",\&tzset,"\n";
+print "POSIX::tzset   ",\&POSIX::tzset,"\n";
+{ no warnings 'redefine';
+  *POSIX::tzset = sub { print "new tzset\n"; };
+}
+print "imported tzset ",\&tzset,"\n";
+print "POSIX::tzset   ",\&POSIX::tzset,"\n";
+exit 0;

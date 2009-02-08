@@ -20,9 +20,9 @@
 use strict;
 use warnings;
 use Tie::TZ;
-use Test::More tests => 43;
+use Test::More tests => 38;
 
-my $want_version = 3;
+my $want_version = 4;
 ok ($Tie::TZ::VERSION >= $want_version);
 ok (Tie::TZ->VERSION  >= $want_version);
 Tie::TZ->VERSION ($want_version);
@@ -91,7 +91,7 @@ $ENV{'TZ'} = 'UTC';
     is ($Tie::TZ::TZ, 'GMT');
 
     { local $Tie::TZ::TZ = 'EST+10';
-      my $got = $Tie::TZ::TZ;
+      $got = $Tie::TZ::TZ;
       is ($ENV{'TZ'}, 'EST+10');
       is ($got, 'EST+10');
       is ($Tie::TZ::TZ, 'EST+10');
@@ -123,50 +123,23 @@ diag ('set ENV = UTC, then local TZ = GMT, with die out of eval');
 }
 
 
-{ my $saw_tzset = 0;
-  no warnings;
-  local *POSIX::tzset = sub {
-    $saw_tzset = 1;
-  };
-  use warnings;
-
-  $ENV{'TZ'} = 'UTC';
-  { $saw_tzset = 0;
-    $Tie::TZ::TZ = 'UTC';
-    is ($saw_tzset, 0, 'UTC -> UTC, should not tzset');
-  }
-  { $saw_tzset = 0;
-    $Tie::TZ::TZ = 'GMT';
-    is ($saw_tzset, 1, 'UTC -> GMT, should tzset');
-  }
-  { $saw_tzset = 0;
-    $Tie::TZ::TZ = undef;
-    is ($saw_tzset, 1, 'GMT -> undef, should tzset');
-  }
-  { $saw_tzset = 0;
-    $Tie::TZ::TZ = undef;
-    is ($saw_tzset, 0, 'undef -> undef, should not tzset');
-  }
-  { $saw_tzset = 0;
-    $Tie::TZ::TZ = 'UTC';
-    is ($saw_tzset, 1, 'undef -> UTC, should tzset');
-  }
-}
+#------------------------------------------------------------------------------
 
 # Return true if setting $ENV{'TZ'} affects what localtime() returns.  As
-# noted in the "perlport" pod on some systems TZ might have no effect at
+# noted in the "perlport" pod, on some systems TZ might have no effect at
 # all.
 #
 sub tz_affects_localtime {
   require POSIX;
   $ENV{'TZ'} = 'GMT';
-  POSIX::tzset();
+  eval { POSIX::tzset() };
   my (undef, undef, $gmt_hour) = localtime (0);
 
   $ENV{'TZ'} = 'BST+1';
-  POSIX::tzset();
+  eval { POSIX::tzset() };
   my (undef, undef, $bst_hour) = localtime (0);
 
+  diag "tz_affects_localtime(): GMT hour $gmt_hour, BST+1 hour $bst_hour";
   return ($gmt_hour != $bst_hour);
 }
 

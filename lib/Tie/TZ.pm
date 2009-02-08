@@ -21,7 +21,7 @@ use warnings;
 use Exporter;
 
 use vars qw(@ISA @EXPORT_OK %EXPORT_TAGS $TZ $VERSION);
-$VERSION = 3;
+$VERSION = 4;
 @ISA = qw(Exporter);
 @EXPORT_OK = qw($TZ);
 %EXPORT_TAGS = (all => \@EXPORT_OK);
@@ -29,6 +29,7 @@ tie $TZ, __PACKAGE__;
 
 use constant DEBUG => 0;
 
+my $tzset_if_available;
 sub TIESCALAR {
   my ($class) = @_;
   my $self = __PACKAGE__.' oops, magic not used!';
@@ -42,7 +43,8 @@ sub FETCH {
 }
 
 sub STORE {
-  my ($self, $newval) = @_;
+  my $self = shift;
+  my $newval = shift;
   if (DEBUG) { print "TiedTZ store ",
                  (defined $newval ? $newval : 'undef'),"\n"; }
 
@@ -63,9 +65,39 @@ sub STORE {
   }
 
   if (DEBUG) { print "  tzset()\n"; }
-  require POSIX;
-  POSIX::tzset();
+  # args shifted off above, no nothing passed here
+  goto $tzset_if_available;
 }
+
+$tzset_if_available = sub {
+
+  # Taking \&POSIX::tzset here makes $tzset_if_available the current
+  # definition of that func.  If someone assigns to change it later then
+  # $tzset_if_available still goes to the old.  That should be ok, since
+  # module imports of tzset() end up the same (ie. not tracking a
+  # redefinition).  The only time a redefine might matter would be fakery
+  # like Test::MockTime.  Time stuff like that is mainly content to mangle
+  # the time funcs, not tzset().  If it does then it has to get in before
+  # module imports anyway, which probably means the very start of a program.
+  #
+  require POSIX;
+  $tzset_if_available = \&POSIX::tzset;
+
+  if (! eval { POSIX::tzset(); 1 }) {
+    if ($@ =~ /not implemented/) {
+      # fail because not implemented, dummy out
+      $tzset_if_available = sub {};
+
+    } else {
+      # Fail for some other reason, propagate this error and let POSIX give
+      # future ones.  The first error is reported against the eval{} here,
+      # but the goto in STORE() means subsequent ones are reported directly
+      # against the $TZ assignment.  This isn't terribly important though,
+      # since success or not-implemented are the only two normal cases.
+      die $@;
+    }
+  }
+};
 
 1;
 __END__
@@ -87,11 +119,11 @@ Tie::TZ - tied $TZ setting %ENV and calling tzset()
 
 C<Tie::TZ> provides a tied C<$TZ> variable which gets and sets the TZ
 environment variable C<$ENV{'TZ'}>.  When it changes C<%ENV> it calls
-C<POSIX::tzset()> ensuring the C library notices the change for subsequent
-C<localtime> etc.
+C<POSIX::tzset()> (if available) ensuring the C library notices the change
+for subsequent C<localtime> etc.
 
     $TZ = 'GMT';
-    # does  $ENV{'TZ'} = 'GMT';  POSIX::tzset();
+    # does  $ENV{'TZ'}='GMT'; POSIX::tzset();
 
 For a plain set you can just as easily store and C<tzset> yourself (or have
 a function do the combo).  The power of a tied variable comes when using
@@ -109,15 +141,21 @@ C<tzset> for it.
       # TZ restored when the die unwinds
     }
 
-Storing C<undef> to C<$TZ> deletes C<$ENV{'TZ'}> which unsets the
+Storing C<undef> to C<$TZ> deletes C<$ENV{'TZ'}>, which unsets the
 environment variable.  This generally means the timezone goes back to the
 system default (F</etc/timezone> or wherever).
 
 As an optimization, if a store to C<$TZ> is already what C<$ENV{'TZ'}>
 contains then C<POSIX::tzset()> is not called.  This is helpful if some of
-the settings you're using might be the same.  You can just store to C<$TZ>
-and it notices when there's no change.  If there's never anything different
-from the startup value then the C<POSIX> module is not even loaded at all.
+the settings you're using might be the same, you can just store to C<$TZ>
+and it notices when there's no change.  If you never store anything
+different from the startup value then the C<POSIX> module is not even loaded
+at all.
+
+If C<tzset> is not implemented on your system then C<Tie::TZ> just sets the
+environment variable.  This is only likely on a very old or very limited C
+library.  Setting the environment variable alone might still affect the
+timezone in force or it might not (see L<perlport/Time and Date>).
 
 =head2 Uses
 
@@ -159,10 +197,10 @@ the moment)
 
 The C<Env> module can tie a C<$TZ> in a similar way if you're confident you
 don't need C<tzset>.  The C<local> trick above works equally well with
-C<Env>.  You can also apply C<local> directly to C<$ENV{'TZ'}>, like
-C<< local $ENV{'TZ'} = 'EST+10' >>, except you can't unset that way.
-(Attempting to store C<undef> provokes a warning before Perl 5.10 and comes
-out as the empty string, which might be subtly different to unset.)
+C<Env>.  You can also apply C<local> directly to C<$ENV{'TZ'}>, like C<local
+$ENV{'TZ'} = 'EST+10'>, except you can't unset that way.  (Attempting to
+store C<undef> provokes a warning before Perl 5.10 and comes out as the
+empty string, which might be subtly different to unset.)
 
 When you get sick of the C library timezone handling have a look at
 L<DateTime::TimeZone>.  Its copy of the Olson timezone database makes it big
@@ -171,7 +209,7 @@ much friendlier for calculations in multiple zones.
 
 =head1 SEE ALSO
 
-L<POSIX>, L<Env>, L<DateTime::TimeZone>
+L<POSIX>, L<Env>, L<DateTime::TimeZone>, L<perlport/Time and Date>
 
 =head1 HOME PAGE
 
