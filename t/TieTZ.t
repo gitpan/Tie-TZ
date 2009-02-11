@@ -22,11 +22,12 @@ use warnings;
 use Tie::TZ;
 use Test::More tests => 38;
 
-my $want_version = 4;
+my $want_version = 5;
 ok ($Tie::TZ::VERSION >= $want_version);
 ok (Tie::TZ->VERSION  >= $want_version);
 Tie::TZ->VERSION ($want_version);
 
+diag "perl $]";
 
 diag ('set: delete ENV');
 { delete $ENV{'TZ'};

@@ -17,6 +17,9 @@ with Tie-TZ.  If not, see <http://www.gnu.org/licenses/>.
 
 
 
+Version 5, February 2009
+    - avoid a panic restartop on perl 5.8.9
+
 Version 4, February 2009
     - skip tzset() on old systems without that func
 

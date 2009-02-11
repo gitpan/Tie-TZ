@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:                Tie-TZ
-version:             4
+version:             5
 abstract:            Tied TZ env var calling tzset() when changed.
 license:             gpl
 author:              
