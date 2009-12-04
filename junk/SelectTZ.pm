@@ -23,10 +23,12 @@
 #    { my $selector = SelectTZ->new ('GMT');
 #      do_something_in_gmt();
 #      ...
+#      $selector->set('Asia/Tokyo');
+#      do_something_in_japan();
 #    }
 #
-# a little in the style of SelectSaver.pm for the "select()" current output
-# filehandle.
+# This is a little in the style of SelectSaver.pm for the "select()" current
+# output filehandle.
 #
 # The danger is that if you don't properly nest your selectors then you
 # could end up with the wrong "old" value restored.  The "local $TZ" in
@@ -43,18 +45,25 @@ use POSIX ();
 sub new {
   my ($class, $tz) = @_;
 
+  my $self = bless { old_tz => $ENV{'TZ'} }, $class;
+  $self->set ($tz);
+  return $self;
+}
+
+sub set {
+  my ($self, $tz) = @_;
+
   # if timezone undef, or if it's the same as the current zone, then no tzsets
   if (! defined $tz || $tz eq '') {
-    return undef;
+    return;
   }
-  my $old_tz = $ENV{'TZ'};
+  my $old_tz = $self->{'old_tz'};
   if (defined $old_tz && $tz eq $old_tz) {
-    return undef;
+    return;
   }
 
   $ENV{'TZ'} = $tz;
   POSIX::tzset();
-  return bless { old_tz => $old_tz }, $class;
 }
 
 sub DESTROY {

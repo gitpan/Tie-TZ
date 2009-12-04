@@ -1,5 +1,3 @@
-#!/usr/bin/perl
-
 # Copyright 2009 Kevin Ryde
 
 # This file is part of Tie-TZ.
@@ -17,12 +15,12 @@
 # You should have received a copy of the GNU General Public License along
 # with Tie-TZ.  If not, see <http://www.gnu.org/licenses/>.
 
-package TestTzsetNotImplemented;
+package Test::POSIX::TzsetNotImplemented;
 use strict;
 use warnings;
 use POSIX ();
 
-sub TestTzsetNotImplemented_tzset {
+sub Test::POSIX::TzsetNotImplemented_tzset {
   require Carp;
   Carp::croak("POSIX::tzset not implemented on this architecture");
 }
@@ -31,25 +29,25 @@ sub TestTzsetNotImplemented_tzset {
 # Give tzset() an initial run just in case.
 eval { POSIX::tzset() };
 { no warnings 'redefine';
-  *POSIX::tzset = \&TestTzsetNotImplemented_tzset;
+  *POSIX::tzset = \&Test::POSIX::TzsetNotImplemented_tzset;
 }
 
 1;
 
 =head1 NAME
 
-TestTzsetNotImplemented - fake POSIX::tzset "not implemented"
+Test::POSIX::TzsetNotImplemented - fake POSIX::tzset "not implemented"
 
 =head1 SYNOPSIS
 
- perl -Idevel -MTestTzsetNotImplemented ...
+ perl -Idevel -MTest::POSIX::TzsetNotImplemented ...
 
 =head1 DESCRIPTION
 
-B<Caution: This is at "trying an idea" stage only!>
+B<Caution: This is at "trying an idea" stage!>
 
-C<TestTzsetNotImplemented> sets C<POSIX::tzset()> to a fake function which
-croaks with
+C<Test::POSIX::TzsetNotImplemented> sets C<POSIX::tzset()> to a fake
+function which croaks with
 
     POSIX::tzset not implemented on this architecture
 
@@ -59,13 +57,14 @@ function not available.
 
 Even in the absense of C<tzset> it's possible setting C<$ENV{'TZ'}> still
 influences the timezone, in fact that's so on most systems.  So
-C<TestTzsetNotImplemented> doesn't stop timezones working altogether, just
-the C<tzset> function.
+C<Test::POSIX::TzsetNotImplemented> doesn't stop timezones working
+altogether, just the C<tzset> function.
 
-You must have C<-MTestTzsetNotImplemented> or C<use TestTzsetNotImplemented>
-early in a program, since the change to C<POSIX::tzset> doesn't influence
-any modules where that function has already been imported, or anywhere a
-coderef C<\&POSIX::tzset> has already been taken.
+You must have C<-MTest::POSIX::TzsetNotImplemented> or C<use
+Test::POSIX::TzsetNotImplemented> early in a program, since the change to
+C<POSIX::tzset> doesn't influence any modules where that function has
+already been imported, or anywhere a coderef C<\&POSIX::tzset> has already
+been taken.
 
 =head1 SEE ALSO
 
@@ -73,11 +72,11 @@ L<POSIX>
 
 =head1 HOME PAGE
 
-L<http://www.geocities.com/user42_kevin/tie-tz/index.html>
+L<http://user42.tuxfamily.org/tie-tz/index.html>
 
 =head1 COPYRIGHT
 
-Copyright 2009 Kevin Ryde
+Copyright 2008, 2009 Kevin Ryde
 
 Tie-TZ is free software; you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software
@@ -89,6 +88,6 @@ FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
 details.
 
 You should have received a copy of the GNU General Public License along with
-Tie-TZ.  If not, see L<http://www.gnu.org/licenses>.
+Tie-TZ.  If not, see L<http://www.gnu.org/licenses/>.
 
 =cut

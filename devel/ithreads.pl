@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-# Copyright 2008, 2009 Kevin Ryde
+# Copyright 2009 Kevin Ryde
 
 # This file is part of Tie-TZ.
 #
@@ -17,28 +17,24 @@
 # You should have received a copy of the GNU General Public License along
 # with Tie-TZ.  If not, see <http://www.gnu.org/licenses/>.
 
+use Tie::TZ;
+use Config;
+$Config{useithreads}
+  or die 'No ithreads in this Perl';
 
-# Usage: ./demo.pl
-#
+eval { require threads } # new in perl 5.8, maybe
+  or die "threads.pm not available -- $@";
 
-use strict;
-use warnings;
-use Tie::TZ qw($TZ);
-use POSIX ('ctime');
+$ENV{'TZ'} = 'GMT';
 
-print "Default: ", ctime(time());
 
-$TZ = 'GMT';
-print "GMT:     ", ctime(time());
+my $t1 = threads->create(sub {
+                           $Tie::TZ::TZ = 'BST+1';
+                           print "in t1: $Tie::TZ::TZ\n";
+                           return 't1 done';
+                         });
 
-$TZ = 'FOO+10';
-print "FOO+10:  ", ctime(time());
-
-{ local $TZ = 'BAR-10';
-  print "BAR-10:  ", ctime(time());
-}
-
-# and $TZ is restored automatically outside the "local", so back to FOO+10
-print "FOO+10:  ", ctime(time());
+print $t1->join,"\n";
+print "in main: $Tie::TZ::TZ\n";
 
 exit 0;

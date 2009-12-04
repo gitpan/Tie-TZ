@@ -41,9 +41,11 @@ eval { tzset() };
 package main;
 use strict;
 use warnings;
-use Test::More tests => 10;
+use Test::More tests => 11;
 use Tie::TZ qw($TZ);
 
+SKIP: { eval 'use Test::NoWarnings; 1'
+          or skip 'Test::NoWarnings not available', 1; }
 
 $ENV{'TZ'} = 'UTC';
 { $Tie_TZ_called = 0;

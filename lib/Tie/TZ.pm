@@ -19,9 +19,10 @@ package Tie::TZ;
 use strict;
 use warnings;
 use Exporter;
+use vars qw($VERSION @ISA @EXPORT_OK %EXPORT_TAGS $TZ);
 
-use vars qw(@ISA @EXPORT_OK %EXPORT_TAGS $TZ $VERSION);
-$VERSION = 5;
+$VERSION = 6;
+
 @ISA = qw(Exporter);
 @EXPORT_OK = qw($TZ);
 %EXPORT_TAGS = (all => \@EXPORT_OK);
@@ -30,6 +31,7 @@ tie $TZ, __PACKAGE__;
 use constant DEBUG => 0;
 
 my $tzset_if_available;
+
 sub TIESCALAR {
   my ($class) = @_;
   my $self = __PACKAGE__.' oops, magic not used!';
@@ -67,8 +69,9 @@ sub STORE {
 
   # this was going to be "goto $tzset_if_available", with the incoming args
   # shifted off @_, but it's a call instead to avoid a bug in perl 5.8.9
-  # where a goto in this context provokes a "panic restartop", at least when
-  # coming from an unwind of a "local" in an eval{} which caught a die().
+  # where a goto to an xsub like this provokes a "panic restartop", at least
+  # when done in the unwind of a "local" value for $TZ within an eval{}
+  # within a caught die().
   #
   $tzset_if_available->();
 }
@@ -117,15 +120,15 @@ Tie::TZ - tied $TZ setting %ENV and calling tzset()
  $TZ = 'GMT';
  {
    local $TZ = 'EST+10';
-   ...
+   # ...
  }
 
 =head1 DESCRIPTION
 
 C<Tie::TZ> provides a tied C<$TZ> variable which gets and sets the TZ
 environment variable C<$ENV{'TZ'}>.  When it changes C<%ENV> it calls
-C<POSIX::tzset()> (if available) ensuring the C library notices the change
-for subsequent C<localtime> etc.
+C<tzset()> (see L<POSIX>) if available, ensuring the C library notices the
+change for subsequent C<localtime> etc.
 
     $TZ = 'GMT';
     # does  $ENV{'TZ'}='GMT'; POSIX::tzset();
@@ -152,10 +155,9 @@ variable.  This generally means the timezone goes back to the system default
 
 As an optimization, if a store to C<$TZ> is already what C<$ENV{'TZ'}>
 contains then C<POSIX::tzset()> is not called.  This is helpful if some of
-the settings you're using might be the same; you can just store to C<$TZ>
-and it notices when there's no change.  If you never store anything
-different from the startup value then the L<C<POSIX>|POSIX> module is not
-even loaded.
+the settings you're using might be the same -- just store to C<$TZ> and it
+notices when there's no change.  If you never store anything different from
+the startup value then the C<POSIX> module is not even loaded.
 
 If C<tzset> is not implemented on your system then C<Tie::TZ> just sets the
 environment variable.  This is only likely on a very old or very limited C
@@ -165,18 +167,31 @@ affect the timezone in force (see L<perlport/Time and Date>).
 =head2 Uses
 
 Quite often C<tzset> is not actually needed.  Decent C libraries look for a
-new TZ each time in the various C<localtime> etc functions.  But C<tzset>
-keeps you out of trouble on older systems, or with any external libraries
-directly accessing the C global variables C<timezone>, C<daylight> and
-C<tzname>.
+new TZ each time in the various C<localtime> etc functions.  Here are some
+cases where you do need it,
 
-Perl's own calls to C<localtime> etc do a C<tzset> themselves where
-necessary to cope with old C libraries (based on a configure test, see
-L<Config>).  However in 5.8.8 and earlier Perl didn't do that on
-C<localtime_r>, and the latter in some versions of GNU C needed an explicit
-C<tzset>; the net result being that you should C<tzset> in threaded Perl
-5.8.8 (whether using threads or not).  Of course even when Perl recognises C
-library limitations you may not be so lucky deep in external libraries.
+=over 4
+
+=item *
+
+Using Perl-level C<localtime> in threaded Perl 5.8.8 (whether using threads
+or not).  Normally Perl arranges to call C<tzset> if the C library doesn't
+(based on a configure test, see L<Config>).  But in 5.8.8 and earlier Perl
+didn't do that on C<localtime_r>, and in some versions of GNU C that
+function needed an explicit C<tzset>.
+
+=item *
+
+Using C<localtime> from C code on older systems which don't check for a new
+C<TZ> each time.  Even if Perl's configure test does the right thing for
+Perl level calls you may not be so lucky deep in external libraries.
+
+=item *
+
+When using the global variables C<timezone>, C<daylight> and C<tzname>,
+either from C code or from the C<POSIX> module C<tzname> function.
+
+=back
 
 =head1 EXPORTS
 
@@ -192,33 +207,32 @@ name
     use Tie::TZ '$TZ';
     $TZ = 'GMT';
 
-or C<":all"> imports everything (not that there's anything except C<$TZ> at
-the moment)
+or C<":all"> imports everything (there's only C<$TZ> at the moment)
 
     use Tie::TZ ':all';
     $TZ = 'GMT';
 
 =head1 OTHER NOTES
 
-The L<C<Env>|Env> module can tie a C<$TZ> in a similar way if you're
+The C<Env> module can make a tied C<$TZ> in a similar way if you're
 confident you don't need C<tzset>.  The C<local> trick above works equally
 well with C<Env>.  You can also apply C<local> directly to C<$ENV{'TZ'}>,
-like C<local $ENV{'TZ'} = 'EST+10'>, except you can't unset that way.
+eg. C<local $ENV{'TZ'} = 'EST+10'>, except you can't unset that way.
 (Attempting to store C<undef> provokes a warning before Perl 5.10 and comes
 out as the empty string, which might be subtly different to unset.)
 
 When you get sick of the C library timezone handling have a look at
-L<C<DateTime::TimeZone>|DateTime::TimeZone>.  Its copy of the Olson timezone
-database makes it big (though no doubt you could turf what you don't use)
-but it's all Perl and is much friendlier for calculations in multiple zones.
+C<DateTime::TimeZone>.  Its copy of the Olson timezone database makes it big
+(no doubt you could turf what you don't use), but it's all Perl and is much
+friendlier for calculations in multiple zones.
 
 =head1 SEE ALSO
 
-L<POSIX>, L<Env>, L<DateTime::TimeZone>, L<perlport/Time and Date>
+L<POSIX>, L<Env>, L<perlport/Time and Date>, L<DateTime::TimeZone>
 
 =head1 HOME PAGE
 
-L<http://www.geocities.com/user42_kevin/tie-tz/index.html>
+http://user42.tuxfamily.org/tie-tz/index.html
 
 =head1 COPYRIGHT
 
@@ -234,6 +248,6 @@ FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
 details.
 
 You should have received a copy of the GNU General Public License along with
-Tie-TZ.  If not, see L<http://www.gnu.org/licenses>.
+Tie-TZ.  If not, see <http://www.gnu.org/licenses/>.
 
 =cut

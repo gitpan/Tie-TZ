@@ -17,6 +17,9 @@ with Tie-TZ.  If not, see <http://www.gnu.org/licenses/>.
 
 
 
+Version 6, December 2009
+    - new Time::TZ
+
 Version 5, February 2009
     - avoid a panic restartop on perl 5.8.9
 

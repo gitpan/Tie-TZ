@@ -44,8 +44,11 @@ eval { tzset() };
 package main;
 use strict;
 use warnings;
-use Test::More tests => 5;
+use Test::More tests => 6;
 use Tie::TZ qw($TZ);
+
+SKIP: { eval 'use Test::NoWarnings; 1'
+          or skip 'Test::NoWarnings not available', 1; }
 
 is ($Tie_TZ_called, 0,
     'Tie_TZ_tzset_not_implemented() not yet called');

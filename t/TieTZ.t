@@ -20,12 +20,21 @@
 use strict;
 use warnings;
 use Tie::TZ;
-use Test::More tests => 38;
+use Test::More tests => 41;
 
-my $want_version = 5;
-ok ($Tie::TZ::VERSION >= $want_version);
-ok (Tie::TZ->VERSION  >= $want_version);
-Tie::TZ->VERSION ($want_version);
+SKIP: { eval 'use Test::NoWarnings; 1'
+          or skip 'Test::NoWarnings not available', 1; }
+
+
+my $want_version = 6;
+cmp_ok ($Tie::TZ::VERSION, '>=', $want_version, 'VERSION variable');
+cmp_ok (Tie::TZ->VERSION,  '>=', $want_version, 'VERSION class method');
+{ ok (eval { Tie::TZ->VERSION($want_version); 1 },
+      "VERSION class check $want_version");
+  my $check_version = $want_version + 1000;
+  ok (! eval { Tie::TZ->VERSION($check_version); 1 },
+      "VERSION class check $check_version");
+}
 
 diag "perl $]";
 
