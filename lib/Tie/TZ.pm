@@ -1,4 +1,4 @@
-# Copyright 2008, 2009 Kevin Ryde
+# Copyright 2008, 2009, 2010 Kevin Ryde
 
 # This file is part of Tie-TZ.
 #
@@ -16,66 +16,23 @@
 # with Tie-TZ.  If not, see <http://www.gnu.org/licenses/>.
 
 package Tie::TZ;
+use 5;
 use strict;
 use warnings;
 use Exporter;
 use vars qw($VERSION @ISA @EXPORT_OK %EXPORT_TAGS $TZ);
 
-$VERSION = 6;
+# uncomment this to run the ### lines
+#use Smart::Comments;
 
-@ISA = qw(Exporter);
+$VERSION = 7;
+
+@ISA = ('Exporter');
 @EXPORT_OK = qw($TZ);
 %EXPORT_TAGS = (all => \@EXPORT_OK);
 tie $TZ, __PACKAGE__;
 
-use constant DEBUG => 0;
-
 my $tzset_if_available;
-
-sub TIESCALAR {
-  my ($class) = @_;
-  my $self = __PACKAGE__.' oops, magic not used!';
-  return bless \$self, $class;
-}
-
-sub FETCH {
-  if (DEBUG >= 2) { print "TiedTZ fetch ",
-                      (defined $ENV{'TZ'} ? $ENV{'TZ'} : 'undef'),"\n"; }
-  return $ENV{'TZ'};
-}
-
-sub STORE {
-  my ($self, $newval) = @_;
-  if (DEBUG) { print "TiedTZ store ",
-                 (defined $newval ? $newval : 'undef'),"\n"; }
-
-  my $oldval = $ENV{'TZ'};
-  if (defined $newval) {
-    if (defined $oldval && $oldval eq $newval) {
-      if (DEBUG) { print "  unchanged: $oldval\n"; }
-      return;
-    }
-    $ENV{'TZ'} = $newval;
-
-  } else {
-    if (! defined $oldval) {
-      if (DEBUG) { print "  unchanged: undef\n"; }
-      return;
-    }
-    delete $ENV{'TZ'};
-  }
-
-  if (DEBUG) { print "  tzset()\n"; }
-
-  # this was going to be "goto $tzset_if_available", with the incoming args
-  # shifted off @_, but it's a call instead to avoid a bug in perl 5.8.9
-  # where a goto to an xsub like this provokes a "panic restartop", at least
-  # when done in the unwind of a "local" value for $TZ within an eval{}
-  # within a caught die().
-  #
-  $tzset_if_available->();
-}
-
 $tzset_if_available = sub {
 
   # Taking \&POSIX::tzset here makes $tzset_if_available the current
@@ -107,8 +64,52 @@ $tzset_if_available = sub {
   }
 };
 
+sub TIESCALAR {
+  my ($class) = @_;
+  my $self = __PACKAGE__.' oops, magic not used!';
+  return bless \$self, $class;
+}
+
+sub FETCH {
+  #### TiedTZ fetch: $ENV{'TZ'}
+  return $ENV{'TZ'};
+}
+
+sub STORE {
+  my ($self, $newval) = @_;
+  ### TiedTZ store: $newval
+
+  my $oldval = $ENV{'TZ'};
+  if (defined $newval) {
+    if (defined $oldval && $oldval eq $newval) {
+      ### unchanged: $oldval
+      return;
+    }
+    $ENV{'TZ'} = $newval;
+
+  } else {
+    if (! defined $oldval) {
+      ### unchanged: undef
+      return;
+    }
+    delete $ENV{'TZ'};
+  }
+
+  ### tzset() call
+
+  # this was going to be "goto $tzset_if_available", with the incoming args
+  # shifted off @_, but it's a call instead to avoid a bug in perl 5.8.9
+  # where a goto to an xsub like this provokes a "panic restartop", at least
+  # when done in the unwind of a "local" value for $TZ within an eval{}
+  # within a caught die().
+  #
+  $tzset_if_available->();
+}
+
 1;
 __END__
+
+=for stopwords Tie-TZ unsets startup eg Ryde
 
 =head1 NAME
 
@@ -236,7 +237,7 @@ http://user42.tuxfamily.org/tie-tz/index.html
 
 =head1 COPYRIGHT
 
-Copyright 2008, 2009 Kevin Ryde
+Copyright 2008, 2009, 2010 Kevin Ryde
 
 Tie-TZ is free software; you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software

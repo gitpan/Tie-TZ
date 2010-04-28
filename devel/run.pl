@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-# Copyright 2008 Kevin Ryde
+# Copyright 2008, 2010 Kevin Ryde
 
 # This file is part of Tie-TZ.
 #
@@ -24,11 +24,26 @@ use Tie::TZ qw($TZ);
 use Devel::Peek;
 use Data::Dumper;
 
-print Dump($TZ);
-print Dumper(\$TZ);
+{
+  require Time::TZ;
+  foreach my $str ('GMT',
+                   'EST+10',
+                   'EST+10EDT',
+                   'Africa/Accra',
+                   ':Africa/Accra',
+                   ':/usr/share/zoneinfo/Africa/Accra') {
+    print "$str: ",Time::TZ->tz_known($str),"\n";
+  }
+  exit 0;
+}
 
-$ENV{'TZ'} = 'EST+10';
-print Dumper($TZ);
-print Dump($TZ);
+{
+  print Dump($TZ);
+  print Dumper(\$TZ);
 
-exit 0;
+  $ENV{'TZ'} = 'EST+10';
+  print Dumper($TZ);
+  print Dump($TZ);
+
+  exit 0;
+}

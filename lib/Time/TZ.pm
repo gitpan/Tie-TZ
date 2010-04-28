@@ -1,4 +1,4 @@
-# Copyright 2007, 2008, 2009 Kevin Ryde
+# Copyright 2007, 2008, 2009, 2010 Kevin Ryde
 
 # This file is part of Tie-TZ.
 #
@@ -16,15 +16,17 @@
 # with Tie-TZ.  If not, see <http://www.gnu.org/licenses/>.
 
 package Time::TZ;
+use 5;
 use strict;
 use warnings;
 use Carp;
 use Tie::TZ;
 use vars qw($VERSION);
 
-$VERSION = 6;
+# uncomment this to run the ### lines
+#use Smart::Comments;
 
-use constant DEBUG => 0;
+$VERSION = 7;
 
 sub new {
   my ($class, %self) = @_;
@@ -45,7 +47,7 @@ sub tz {
   if (my $choose = delete $self->{'choose'}) {
     foreach my $tz (@$choose) {
       if ($self->tz_known($tz)) {
-        if (DEBUG) { print "Time::TZ choose $tz\n"; }
+        ### Time-TZ choose: $tz
         return ($self->{'tz'} = $tz);
       }
     }
@@ -62,9 +64,34 @@ sub tz {
   return $self->{'tz'};
 }
 
+my %tz_known = (UTC => 1, GMT => 1);
+my $zonedir;
 sub tz_known {
   my ($class_or_self, $tz) = @_;
-  if (! defined $tz || $tz eq 'UTC' || $tz eq 'GMT') { return 1; }
+  ### tz_known(): $tz
+  if (! defined $tz || $tz_known{$tz}) {
+    return 1;
+  }
+
+  # EST-10 or EST-10EDT etc
+  if ($tz =~ /^[A-Z]+[0-9+-]+([A-Z]+)?($|,)/) {
+    ### yes, std+offset form
+    return 1;
+  }
+
+  {
+    require File::Spec;
+    $zonedir ||= File::Spec->catdir (File::Spec->rootdir,
+                                     'usr','share','zoneinfo');
+    my $filename = $tz;
+    $filename =~ s/^://;
+    $filename = File::Spec->rel2abs ($filename, $zonedir);
+    ### $filename
+    if (-e $filename) {
+      ### yes, file exists
+      return 1;
+    }
+  }
 
   # any hour or minute different from GMT in any of 12 calendar months
   my $timet = time();
@@ -77,9 +104,12 @@ sub tz_known {
     my ($g_sec,$g_min,$g_hour,$g_mday,$g_mon,$g_year,$g_wday,$g_yday,$g_isdst)
       = gmtime ($t);
     if ($l_hour != $g_hour || $l_min != $g_min) {
+      ### yes, different from GMT in mon: $mon
       return 1;
     }
   }
+
+  ### no
   return 0;
 }
 
@@ -99,6 +129,8 @@ sub call {
 
 1;
 __END__
+
+=for stopwords Tie-TZ ie placename UTC localtime Ryde
 
 =head1 NAME
 
@@ -126,10 +158,10 @@ to make calculations in that zone by temporarily changing the C<TZ>
 environment variable (see L<Tie::TZ>).
 
 The advantage of this approach is that it needs only a modest amount of code
-and uses the same system timezones as other programs.  Of course whether the
-system timezones are up-to-date etc is another matter, and switching C<TZ>
-for each calculation can be disappointingly slow (for example in the GNU C
-Library).
+and uses the same system timezones as other programs.  Of course what system
+timezones are available and whether they're up-to-date etc is another
+matter, and switching C<TZ> for each calculation can be disappointingly slow
+(for example in the GNU C Library).
 
 =head1 FUNCTIONS
 
@@ -162,7 +194,7 @@ supply a C<fallback> then it just carps and uses that fallback value.
 The C<name> parameter is not used for any timezone calculations, it's just a
 handy way to keep a human-readable placename with the object.
 
-=item C<bool = Time::TZ-E<gt>tz_known ($str)>
+=item C<$bool = Time::TZ-E<gt>tz_known ($str)>
 
 Return true if C<TZ> setting C<$str> is known to the system (the C library
 etc).
@@ -170,17 +202,20 @@ etc).
     $bool = Time::TZ->tz_known ('EST+10');          # true
     $bool = Time::TZ->tz_known ('some bogosity');   # false
 
-In the GNU C Library, a bad C<TZ> setting makes C<localtime> come out as
-GMT, so the test is that C<$str> gives C<localtime> different from C<gmtime>
-on one of a range of values through the year (so it can be the same as GMT
-during daylight savings, or non daylight savings).  Zones "GMT" and "UTC"
-are always considered known.
+The way this works is unfortunately rather system dependent.  The
+"name+/-offset" forms are always available, as are "GMT" and "UTC".  On a
+GNU system place names are checked under F</usr/share/zoneinfo>.  Otherwise
+a check is made to see if C<$str> gives C<localtime> different from
+C<gmtime> on one of a range of values through the year.
 
-Comparing against GMT is no good for places like "Africa/Accra" which are
-known but are just GMT.  The suggestion is not to use C<choose> but just put
-it in unconditionally,
+The time check works for the GNU C Library where a bad timezone comes out as
+GMT, but might not be enough elsewhere.  Place names the same as GMT are no
+good of course, and if the system makes a bogus zone come out as say the
+default local time then they won't be detected (unless that local time
+happens to be GMT too).  If wrong the suggestion for now is not to use
+C<choose> but put in a setting unconditionally,
 
-    my $acc = Time::TZ->new (tz => 'Africa/Accra');
+    my $acc = Time::TZ->new (tz => 'SomeWhere');
 
 =back
 
@@ -208,14 +243,14 @@ Return the name of C<$tz>, or C<undef> if none set.
 
 Call C<$subr> with the C<TZ> environment variable temporarily set to
 C<$tz-E<gt>tz>.  The return value is the return from C<$subr>, with the same
-scalar or array context as the C<call> method itself.
+scalar or array context as the C<call> itself.
 
     $tz->call (sub { print "the time is ",ctime() });
 
     my $year = $tz->call (\&Date::Calc::This_Year);
 
 Arguments are passed on to C<$subr>.  For an anonymous sub there's no need
-for such arguments, but they can be good for a named sub,
+for that, but they can be good for a named sub,
 
     my @ret = $tz->call (\&foo, 1, 2, 3);
 
@@ -234,7 +269,7 @@ The return is the usual list of 9 localtime values.
 
 =head1 SEE ALSO
 
-L<Tie::TZ>, L<perlvar/ENV>, L<Time::localtime>, L<DateTime::TimeZone>
+L<Tie::TZ>, L<perlvar/%ENV>, L<Time::localtime>, L<DateTime::TimeZone>
 
 =head1 HOME PAGE
 
@@ -242,7 +277,7 @@ http://user42.tuxfamily.org/tie-tz/index.html
 
 =head1 COPYRIGHT
 
-Copyright 2007, 2008, 2009 Kevin Ryde
+Copyright 2007, 2008, 2009, 2010 Kevin Ryde
 
 Tie-TZ is free software; you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software

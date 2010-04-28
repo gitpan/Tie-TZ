@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-# Copyright 2008, 2009 Kevin Ryde
+# Copyright 2008, 2009, 2010 Kevin Ryde
 
 # This file is part of Tie-TZ.
 #
@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License along
 # with Tie-TZ.  If not, see <http://www.gnu.org/licenses/>.
 
-use 5.002;
+use 5;
 use strict;
 use warnings;
 use ExtUtils::MakeMaker;
@@ -28,7 +28,7 @@ MyMakeMakerExtras::WriteMakefile
   (NAME         => 'Tie-TZ',
    ABSTRACT     => 'Tied TZ env var calling tzset() when changed.',
    VERSION_FROM => 'lib/Tie/TZ.pm',
-   MIN_PERL_VERSION => '5.002', # probably not really
+   MIN_PERL_VERSION => '5', # probably not really
    PREREQ_PM    => {
                     'constant'   => 0,
                     'File::Spec' => 0,
@@ -53,10 +53,3 @@ MyMakeMakerExtras::WriteMakefile
            },
       },
   );
-
-#------------------------------------------------------------------------------
-package MY;
-sub postamble {
-  my ($makemaker) = @_;
-  return MyMakeMakerExtras::postamble($makemaker);
-}

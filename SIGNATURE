@@ -1,5 +1,5 @@
 This file contains message digests of all files listed in MANIFEST,
-signed via the Module::Signature module, version 0.61.
+signed via the Module::Signature module, version 0.63.
 
 To verify the content in this distribution, first make sure you have
 Module::Signature installed, then type:
@@ -15,23 +15,24 @@ not run its Makefile.PL or Build.PL.
 Hash: SHA1
 
 SHA1 842745cb706f8f2126506f544492f7a80dbe29b3 COPYING
-SHA1 07f47c0ab71f9c1e5ffd165b07896e6846799b39 Changes
-SHA1 6a8c66828fa89b4d9b346ad26b541bd911c072d6 MANIFEST
-SHA1 bb78fa7bf2dfebdda59c9efb64db51b173fb9e2f MANIFEST.SKIP
-SHA1 a009e2d358d622f9e5ff985efdc6ead475f84bc2 META.yml
-SHA1 13bb193f3a09dd19a5cbc199556717f5e6234395 Makefile.PL
-SHA1 388772807d876ded5db34b443169b5e9c21c49e5 debian/changelog
+SHA1 018b8d77357f9132262d35d92de6f0102569984d Changes
+SHA1 f4161a33adfac8419c0112eac1700f4daed5d87f MANIFEST
+SHA1 00e97fa7664a1ea29a3be5b0b2ec2b0076e002f1 MANIFEST.SKIP
+SHA1 3c3509b89dc26870740fc96e1af38eda632ac4b4 META.yml
+SHA1 332536d6059b9166078bf7ca55770bfdf27b76d6 Makefile.PL
+SHA1 d62132d9e1960a66e32694cfff2996f5d24b3a87 debian/changelog
 SHA1 ac3478d69a3c81fa62e60f5c3696165a4e5e6ac4 debian/compat
-SHA1 ea1854056d047fb30683a51a3569c82bacaa81b7 debian/control
-SHA1 6ab2cc0f80cac178625ec1eed6c6cb4920b2d2bd debian/copyright
+SHA1 c8320b50ced003d4b77708d9e04bd41a07afc6a8 debian/control
+SHA1 cc349f46b61e8b914a56a9d7271d5b348389353c debian/copyright
 SHA1 9610f819db0c0da9289e3de1ef8789c5f7032919 debian/rules
+SHA1 61652cd1568dcf2614df833eba241755eee34e89 debian/source/format
 SHA1 1df45257e917f273bbc2abfb974e97036609d9b3 debian/watch
 SHA1 fbe346221f0c2837328dbd4c3cba018c43caba04 devel/Z-tz.c
 SHA1 02ecced3c6440b6b47b5ba7f43d76ad6215f81c2 devel/byname.pl
 SHA1 f90ece2cd06ed8445d8a47d18cec4120a6bdc02d devel/datecalc.pl
 SHA1 03749dde6d459134f4dc4a157817100db18ec3a0 devel/ithreads.pl
 SHA1 59fd9cad6ed6379553f2884af1c0517afbd82182 devel/lib/Test/POSIX/TzsetNotImplemented.pm
-SHA1 d62d83a22866dfab5dc50ed51e8d2ddf83c0ae71 devel/run.pl
+SHA1 8489f75235c900c9036d568670f486abbbcafe90 devel/run.pl
 SHA1 8ee7b9e6b8ec0c71482618bb5eb140b962cfc9ad devel/speed-timezone.pl
 SHA1 fc5a611cdc12e12bbc3cd23ed10cb6e925db2baf devel/speed.pl
 SHA1 4c13eb7cedbd13b2710a724febb5ada08527e287 devel/strace.pl
@@ -40,25 +41,27 @@ SHA1 620ddb2ef22f3c945dafb43c9abc0010f9cc1797 devel/tzset.pl
 SHA1 047c8e184a44f05cc663e0b0f7a68a14983b5b8a devel/undef.pl
 SHA1 6c185a81da37cc1615df9fbdbbcafac025fd3933 examples/tie-tz.pl
 SHA1 6f2e6bf2f5f91f795813c76ccd82f05a8c6874b0 examples/time-tz.pl
-SHA1 ee1da8813ec2390f2fe263a5d7d4693a5459d904 inc/MyMakeMakerExtras.pm
+SHA1 683736a89b8a1cf1aee59e2ec665e3fe34e40339 inc/MyMakeMakerExtras.pm
+SHA1 63427b66eb26f013f10c835b0cf320c93361f310 inc/my_pod2html
 SHA1 05e6f1a4b8592fd9251097eb8e739aaae563d772 junk/SelectTZ.pm
-SHA1 576e05d3628f07462962553d718eafa19ea66d78 lib/Tie/TZ.pm
-SHA1 0c09c76a4cb7c717a69e85a922a53a1fa4bbfaaf lib/Time/TZ.pm
-SHA1 378b932305fb60823467c2af3c771fe3fc295a13 t/0-META-read.t
-SHA1 a343ed4dce96d05de51eed1ec065911584b96fce t/0-Test-DistManifest.t
-SHA1 bba0dc087cbe64d8f100ab77e6cef061c0bebf27 t/0-Test-Pod.t
-SHA1 e50cc8efe234b79344e799f53af954654ce89a08 t/0-Test-Synopsis.t
-SHA1 b34936a0c7242201723197350dabbfecc4ef57c5 t/TieTZ.t
+SHA1 c5b4043a307ff315b429b0416fafb296929e3982 lib/Tie/TZ.pm
+SHA1 391c5e5e6f2df4702fb7d8b126c44be3a1eec823 lib/Time/TZ.pm
+SHA1 d5d5c83c83918d8c97ca79e92ea840cdf277f01f t/0-META-read.t
+SHA1 37abd43b41068804ea4bb099fdd89af21be82926 t/0-Test-DistManifest.t
+SHA1 8f93fb4c8f0424a4442cc93c9a2e86342ef55281 t/0-Test-Pod.t
+SHA1 5fa94e1e88e44064d1e6b21c88a4c9374a17bfd1 t/0-Test-Synopsis.t
+SHA1 cfb7a2cba63fdedb0a568c843153694aa2b96fde t/0-Test-YAML-Meta.t
+SHA1 263a7d8deb315f91dab927be252a5d8dceca6937 t/TieTZ.t
 SHA1 f192ae7fcd0648cf6c3d0801be77e3e44c890b52 t/TieTZimport-all.t
 SHA1 259c4cafe9400b585e88ea0984aee7b8600909b1 t/TieTZimport.t
-SHA1 908f4fc8f2542c32af9dd8adc5bf46bbb8dcb4ed t/TimeTZ.t
+SHA1 b435765baf5e8d79bd9824a003389a94529a7cac t/TimeTZ.t
 SHA1 35b7ad8fdeb84394f9e61c2a283cdcc51a17210c t/tzset-calls.t
 SHA1 4d871b6d3a5cd837c7b78c56b6f3865f953bc14c t/tzset-not-implemented.t
 SHA1 b9dcd961ad22bea6262eeb42d90836e77f7527be t/tzset-other-error.t
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.10 (GNU/Linux)
 
-iD8DBQFLGYGmLFMCIV9q3ToRAnmMAJ9TG7uRDZSwN5sjW0Vg9wtgy8zywQCdFuIe
-Fnf2dubTWDFkO6xK59EGe2E=
-=0+T2
+iD8DBQFL2LiWLFMCIV9q3ToRAi/WAJ4vpUTTV4p2l6oT6IahSUHdy1CuagCeP3HW
+HuDuq+7yz2nng7tIuK81al0=
+=woJP
 -----END PGP SIGNATURE-----

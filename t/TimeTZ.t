@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-# Copyright 2007, 2008, 2009 Kevin Ryde
+# Copyright 2007, 2008, 2009, 2010 Kevin Ryde
 
 # This file is part of Tie-TZ.
 #
@@ -20,12 +20,15 @@
 
 use strict;
 use warnings;
-use Time::TZ;
+use Test::More tests => 14;
 
-use Test::More tests => 12;
+# BEGIN {
+#  SKIP: { eval 'use Test::NoWarnings; 1'
+#            or skip 'Test::NoWarnings not available', 1; }
+#}
 
-SKIP: { eval 'use Test::NoWarnings; 1'
-          or skip 'Test::NoWarnings not available', 1; }
+require Time::TZ;
+
 
 #------------------------------------------------------------------------------
 # name()
@@ -49,6 +52,18 @@ SKIP: { eval 'use Test::NoWarnings; 1'
   is ($tz->tz, 'EST-10', 'choose EST-10');
 }
 
+{
+  require POSIX;
+  foreach my $tz ('GMT',
+                  'EST-10',
+                  'first bogosity',
+                  'second bogosity',
+                  'America/New_York',
+                  'Europe/London') {
+    local $ENV{'TZ'} = $tz;
+    diag "ctime ",POSIX::ctime(time())," in TZ='$tz'";
+  }
+}
 
 #------------------------------------------------------------------------------
 # call()
@@ -74,9 +89,24 @@ SKIP: { eval 'use Test::NoWarnings; 1'
 #------------------------------------------------------------------------------
 # tz_known()
 
-ok (Time::TZ->tz_known('GMT'));
-ok (Time::TZ->tz_known('UTC'));
-ok (! Time::TZ->tz_known('some bogosity'));
-ok (Time::TZ->tz_known('EST+10'));
+foreach my $elem (['GMT', 1],
+                  ['UTC', 1],
+                  ['EST+10',    1],
+                  ['EST+10EDT', 1],
+                  ['CST+6CDT,M3.2.0,M11.1.0', 1],
+                  ['CST+6,M3.2.0,M11.1.0',    1],
+                  ['some bogosity', 0],
+                 ) {
+  my ($tz, $want) = @$elem;
+  is (Time::TZ->tz_known($tz) ? 1 : 0, $want,
+      "tz_known() $tz");
+}
+
+foreach my $tz ('Africa/Accra',
+                ':Africa/Accra',
+                ':/usr/share/zoneinfo/Africa/Accra',
+                'BlahBlah') {
+  diag "tz_known('$tz') is ",(Time::TZ->tz_known($tz) ? 1 : 0);
+}
 
 exit 0;
