@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -w
 
 # Copyright 2007, 2008, 2009, 2010 Kevin Ryde
 
@@ -22,10 +22,9 @@ use strict;
 use warnings;
 use Test::More tests => 14;
 
-# BEGIN {
-#  SKIP: { eval 'use Test::NoWarnings; 1'
-#            or skip 'Test::NoWarnings not available', 1; }
-#}
+use lib 't';
+use MyTestHelpers;
+BEGIN { MyTestHelpers::nowarnings() }
 
 require Time::TZ;
 

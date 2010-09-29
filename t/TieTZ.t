@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -w
 
 # Copyright 2008, 2009, 2010 Kevin Ryde
 
@@ -20,13 +20,13 @@
 use strict;
 use warnings;
 use Tie::TZ;
-use Test::More tests => 41;
+use Test::More tests => 40;
 
-SKIP: { eval 'use Test::NoWarnings; 1'
-          or skip 'Test::NoWarnings not available', 1; }
+use lib 't';
+use MyTestHelpers;
+BEGIN { MyTestHelpers::nowarnings() }
 
-
-my $want_version = 7;
+my $want_version = 8;
 is ($Tie::TZ::VERSION, $want_version, 'VERSION variable');
 is (Tie::TZ->VERSION,  $want_version, 'VERSION class method');
 { ok (eval { Tie::TZ->VERSION($want_version); 1 },

@@ -17,6 +17,9 @@ with Tie-TZ.  If not, see <http://www.gnu.org/licenses/>.
 
 
 
+Version 8, September 2010
+    - test manifest only as an author test
+
 Version 7, April 2009
     - tz_known() look under /usr/share/zoneinfo
 

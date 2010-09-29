@@ -1,6 +1,6 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -w
 
-# Copyright 2009 Kevin Ryde
+# Copyright 2009, 2010 Kevin Ryde
 
 # This file is part of Tie-TZ.
 #
@@ -43,11 +43,12 @@ eval { tzset() };
 package main;
 use strict;
 use warnings;
-use Test::More tests => 12;
+use Test::More tests => 11;
 use Tie::TZ qw($TZ);
 
-SKIP: { eval 'use Test::NoWarnings; 1'
-          or skip 'Test::NoWarnings not available', 1; }
+use lib 't';
+use MyTestHelpers;
+BEGIN { MyTestHelpers::nowarnings() }
 
 is ($Tie_TZ_called, 0, 'Tie_TZ_tzset_other_error() not yet called');
 
@@ -55,7 +56,7 @@ is ($Tie_TZ_called, 0, 'Tie_TZ_tzset_other_error() not yet called');
   my $err = $@;
   is ($Tie_TZ_called, 1, 'Tie_TZ_tzset_other_error() called');
   is ($Tie_TZ_argcount, 0, 'called with no args');
-  like ($err, qr/some other kind of error/,
+  like ($err, '/some other kind of error/',
         'error message');
 }
 

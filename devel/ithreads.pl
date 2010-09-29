@@ -1,6 +1,6 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -w
 
-# Copyright 2009 Kevin Ryde
+# Copyright 2009, 2010 Kevin Ryde
 
 # This file is part of Tie-TZ.
 #
@@ -17,6 +17,8 @@
 # You should have received a copy of the GNU General Public License along
 # with Tie-TZ.  If not, see <http://www.gnu.org/licenses/>.
 
+use strict;
+use warnings;
 use Tie::TZ;
 use Config;
 $Config{useithreads}

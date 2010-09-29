@@ -15,53 +15,55 @@ not run its Makefile.PL or Build.PL.
 Hash: SHA1
 
 SHA1 842745cb706f8f2126506f544492f7a80dbe29b3 COPYING
-SHA1 018b8d77357f9132262d35d92de6f0102569984d Changes
-SHA1 f4161a33adfac8419c0112eac1700f4daed5d87f MANIFEST
-SHA1 00e97fa7664a1ea29a3be5b0b2ec2b0076e002f1 MANIFEST.SKIP
-SHA1 3c3509b89dc26870740fc96e1af38eda632ac4b4 META.yml
-SHA1 332536d6059b9166078bf7ca55770bfdf27b76d6 Makefile.PL
-SHA1 d62132d9e1960a66e32694cfff2996f5d24b3a87 debian/changelog
+SHA1 bc8104cb90921a3bf135da9e47b15f61d758c8fa Changes
+SHA1 5951cd245c1d78d3c2e613abd292206aa71aa0f1 MANIFEST
+SHA1 e6e7c2904ea5d300c0ddf70fc5a80f5005229aa9 MANIFEST.SKIP
+SHA1 1a997fc35134861971bb51dba4c436aba71a5e1c META.yml
+SHA1 7184e182a1b42bff627809dbc9648412a4305930 Makefile.PL
+SHA1 468fc79595e3f76be4303d1b254d6c4b7ddc5143 debian/changelog
 SHA1 ac3478d69a3c81fa62e60f5c3696165a4e5e6ac4 debian/compat
-SHA1 c8320b50ced003d4b77708d9e04bd41a07afc6a8 debian/control
+SHA1 08bbb79a4085d9acf23998d2c929b5bc1dacd4ef debian/control
 SHA1 cc349f46b61e8b914a56a9d7271d5b348389353c debian/copyright
 SHA1 9610f819db0c0da9289e3de1ef8789c5f7032919 debian/rules
 SHA1 61652cd1568dcf2614df833eba241755eee34e89 debian/source/format
 SHA1 1df45257e917f273bbc2abfb974e97036609d9b3 debian/watch
 SHA1 fbe346221f0c2837328dbd4c3cba018c43caba04 devel/Z-tz.c
-SHA1 02ecced3c6440b6b47b5ba7f43d76ad6215f81c2 devel/byname.pl
-SHA1 f90ece2cd06ed8445d8a47d18cec4120a6bdc02d devel/datecalc.pl
-SHA1 03749dde6d459134f4dc4a157817100db18ec3a0 devel/ithreads.pl
+SHA1 cd1e7113bbf2fff02aa640f346e91b8032b1a016 devel/byname.pl
+SHA1 881c5b81de81ddaa863f1758dc247e48a7812e66 devel/datecalc.pl
+SHA1 3f7303b450b053a101eecfbd9104dd782f01bb9e devel/ithreads.pl
 SHA1 59fd9cad6ed6379553f2884af1c0517afbd82182 devel/lib/Test/POSIX/TzsetNotImplemented.pm
-SHA1 8489f75235c900c9036d568670f486abbbcafe90 devel/run.pl
-SHA1 8ee7b9e6b8ec0c71482618bb5eb140b962cfc9ad devel/speed-timezone.pl
-SHA1 fc5a611cdc12e12bbc3cd23ed10cb6e925db2baf devel/speed.pl
-SHA1 4c13eb7cedbd13b2710a724febb5ada08527e287 devel/strace.pl
-SHA1 2e60b0e2dd6119e940b24385530a4e278ede57e9 devel/tzname.pl
-SHA1 620ddb2ef22f3c945dafb43c9abc0010f9cc1797 devel/tzset.pl
-SHA1 047c8e184a44f05cc663e0b0f7a68a14983b5b8a devel/undef.pl
-SHA1 6c185a81da37cc1615df9fbdbbcafac025fd3933 examples/tie-tz.pl
-SHA1 6f2e6bf2f5f91f795813c76ccd82f05a8c6874b0 examples/time-tz.pl
-SHA1 683736a89b8a1cf1aee59e2ec665e3fe34e40339 inc/MyMakeMakerExtras.pm
-SHA1 63427b66eb26f013f10c835b0cf320c93361f310 inc/my_pod2html
+SHA1 53d7e6ed0d972c84e324ee794e3ce96f6ad8ce8e devel/run.pl
+SHA1 5d6d173ea49430534755a9fa5e343ae183067ad6 devel/speed-timezone.pl
+SHA1 2892f91c22acc5d1b861860f9e13f14ba7886e47 devel/speed.pl
+SHA1 4d73cdfbf8de40ce8dbe7241de765b349c426bad devel/strace.pl
+SHA1 73e6fd0fe36b1eec98d9fc23fa6ad10bb7f1ac1a devel/tzname.pl
+SHA1 2b0fd7c657bfabf054472f139fa0b74757d8af40 devel/tzset.pl
+SHA1 9e361430ad9b9743ec01e13efa28230b887e9ae8 devel/undef.pl
+SHA1 d8fddfcf93f689f616057731926127f87605e516 examples/tie-tz.pl
+SHA1 37c77cce9ef0a502c10cbaf3c6974073c5acfede examples/time-tz.pl
+SHA1 3cf3345a9177dbe362dfc8fbf192272f4a611ca8 inc/MyMakeMakerExtras.pm
+SHA1 692a1ddc2ca6b98cac7b48ea40bc1ac1509e8ed9 inc/my_pod2html
 SHA1 05e6f1a4b8592fd9251097eb8e739aaae563d772 junk/SelectTZ.pm
-SHA1 c5b4043a307ff315b429b0416fafb296929e3982 lib/Tie/TZ.pm
-SHA1 391c5e5e6f2df4702fb7d8b126c44be3a1eec823 lib/Time/TZ.pm
-SHA1 d5d5c83c83918d8c97ca79e92ea840cdf277f01f t/0-META-read.t
-SHA1 37abd43b41068804ea4bb099fdd89af21be82926 t/0-Test-DistManifest.t
-SHA1 8f93fb4c8f0424a4442cc93c9a2e86342ef55281 t/0-Test-Pod.t
-SHA1 5fa94e1e88e44064d1e6b21c88a4c9374a17bfd1 t/0-Test-Synopsis.t
-SHA1 cfb7a2cba63fdedb0a568c843153694aa2b96fde t/0-Test-YAML-Meta.t
-SHA1 263a7d8deb315f91dab927be252a5d8dceca6937 t/TieTZ.t
-SHA1 f192ae7fcd0648cf6c3d0801be77e3e44c890b52 t/TieTZimport-all.t
-SHA1 259c4cafe9400b585e88ea0984aee7b8600909b1 t/TieTZimport.t
-SHA1 b435765baf5e8d79bd9824a003389a94529a7cac t/TimeTZ.t
-SHA1 35b7ad8fdeb84394f9e61c2a283cdcc51a17210c t/tzset-calls.t
-SHA1 4d871b6d3a5cd837c7b78c56b6f3865f953bc14c t/tzset-not-implemented.t
-SHA1 b9dcd961ad22bea6262eeb42d90836e77f7527be t/tzset-other-error.t
+SHA1 d3d83d0ce5222d66c27a3d11370c54c2a9812efe lib/Tie/TZ.pm
+SHA1 1f6a63546f673706304be36be419ff5a2cdcf115 lib/Time/TZ.pm
+SHA1 5e5680b471811244fe93571efc23e7b6089cac3b t/MyTestHelpers.pm
+SHA1 0512623f25424efa1548ac5a572c76016c07735f t/TieTZ.t
+SHA1 b2434b4c92e18e040898de61cfae83b7250dbfed t/TieTZimport-all.t
+SHA1 fd9d26a1d9c9cdd4665f589d824cdc40524bce2c t/TieTZimport.t
+SHA1 192a5503bc91729ec2fcbcc3ba30596c3ccb3209 t/TimeTZ.t
+SHA1 297df381f8c479945667058695289aae66c02ee4 t/tzset-calls.t
+SHA1 7350d7e7387f0bfa66a7c027caf3e0a5504ed3e6 t/tzset-not-implemented.t
+SHA1 05b6cea3f2d9139129fd45ef87197795654b30d7 t/tzset-other-error.t
+SHA1 9127f78a0dfa04976acbb979dd7862ef59a74c58 xt/0-META-read.t
+SHA1 37abd43b41068804ea4bb099fdd89af21be82926 xt/0-Test-DistManifest.t
+SHA1 8f93fb4c8f0424a4442cc93c9a2e86342ef55281 xt/0-Test-Pod.t
+SHA1 1de8f07883f6bf1a2ef79f2cb8adf1deb3f61cee xt/0-Test-Synopsis.t
+SHA1 fb517c2fae5ddac559318bf6a224949115ea3129 xt/0-Test-YAML-Meta.t
+SHA1 c84fa2f39a57885c647ebb69a456f3129de706c1 xt/0-exe-shebang.t
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.10 (GNU/Linux)
 
-iD8DBQFL2LiWLFMCIV9q3ToRAi/WAJ4vpUTTV4p2l6oT6IahSUHdy1CuagCeP3HW
-HuDuq+7yz2nng7tIuK81al0=
-=woJP
+iD8DBQFMo8Y8LFMCIV9q3ToRAsGKAJ9oRruXbo3d2QTLinNRH6s/7SbscgCaAugv
+qK2erZ8i8/V5U8ROiagQxDQ=
+=hy6T
 -----END PGP SIGNATURE-----

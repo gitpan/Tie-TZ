@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License along
 # with Tie-TZ.  If not, see <http://www.gnu.org/licenses/>.
 
-use 5;
+BEGIN { require 5 }
 use strict;
 use warnings;
 use ExtUtils::MakeMaker;
@@ -44,12 +44,5 @@ MyMakeMakerExtras::WriteMakefile
    META_MERGE
    => { resources
         => { homepage => 'http://user42.tuxfamily.org/tie-tz/index.html' },
-        optional_features
-        => { maximum_tests
-             => { description => 'Have "make test" do as much as possible.',
-                  requires => { 'Test::NoWarnings' => 0,
-                              },
-                },
-           },
       },
   );

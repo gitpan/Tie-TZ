@@ -1,6 +1,6 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -w
 
-# Copyright 2009 Kevin Ryde
+# Copyright 2009, 2010 Kevin Ryde
 
 # This file is part of Tie-TZ.
 #
@@ -41,11 +41,12 @@ eval { tzset() };
 package main;
 use strict;
 use warnings;
-use Test::More tests => 11;
+use Test::More tests => 10;
 use Tie::TZ qw($TZ);
 
-SKIP: { eval 'use Test::NoWarnings; 1'
-          or skip 'Test::NoWarnings not available', 1; }
+use lib 't';
+use MyTestHelpers;
+BEGIN { MyTestHelpers::nowarnings() }
 
 $ENV{'TZ'} = 'UTC';
 { $Tie_TZ_called = 0;

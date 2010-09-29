@@ -16,7 +16,7 @@
 # with Tie-TZ.  If not, see <http://www.gnu.org/licenses/>.
 
 package Tie::TZ;
-use 5;
+# require 5;
 use strict;
 use warnings;
 use Exporter;
@@ -25,12 +25,12 @@ use vars qw($VERSION @ISA @EXPORT_OK %EXPORT_TAGS $TZ);
 # uncomment this to run the ### lines
 #use Smart::Comments;
 
-$VERSION = 7;
+$VERSION = 8;
 
 @ISA = ('Exporter');
 @EXPORT_OK = qw($TZ);
 %EXPORT_TAGS = (all => \@EXPORT_OK);
-tie $TZ, __PACKAGE__;
+tie $TZ, 'Tie::TZ';
 
 my $tzset_if_available;
 $tzset_if_available = sub {
@@ -109,7 +109,7 @@ sub STORE {
 1;
 __END__
 
-=for stopwords Tie-TZ unsets startup eg Ryde
+=for stopwords TZ Tie-TZ unsets startup eg Ryde
 
 =head1 NAME
 

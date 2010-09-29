@@ -16,7 +16,7 @@
 # with Tie-TZ.  If not, see <http://www.gnu.org/licenses/>.
 
 package Time::TZ;
-use 5;
+# require 5;
 use strict;
 use warnings;
 use Carp;
@@ -26,7 +26,7 @@ use vars qw($VERSION);
 # uncomment this to run the ### lines
 #use Smart::Comments;
 
-$VERSION = 7;
+$VERSION = 8;
 
 sub new {
   my ($class, %self) = @_;
@@ -130,7 +130,7 @@ sub call {
 1;
 __END__
 
-=for stopwords Tie-TZ ie placename UTC localtime Ryde
+=for stopwords TZ Tie-TZ ie placename UTC localtime Ryde
 
 =head1 NAME
 
