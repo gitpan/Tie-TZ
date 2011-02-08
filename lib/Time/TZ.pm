@@ -1,4 +1,4 @@
-# Copyright 2007, 2008, 2009, 2010 Kevin Ryde
+# Copyright 2007, 2008, 2009, 2010, 2011 Kevin Ryde
 
 # This file is part of Tie-TZ.
 #
@@ -18,7 +18,6 @@
 package Time::TZ;
 # require 5;
 use strict;
-use warnings;
 use Carp;
 use Tie::TZ;
 use vars qw($VERSION);
@@ -26,7 +25,7 @@ use vars qw($VERSION);
 # uncomment this to run the ### lines
 #use Smart::Comments;
 
-$VERSION = 8;
+$VERSION = 9;
 
 sub new {
   my ($class, %self) = @_;
@@ -44,11 +43,12 @@ sub name {
 
 sub tz {
   my ($self) = @_;
-  if (my $choose = delete $self->{'choose'}) {
-    foreach my $tz (@$choose) {
-      if ($self->tz_known($tz)) {
-        ### Time-TZ choose: $tz
-        return ($self->{'tz'} = $tz);
+  my $choose = delete $self->{'choose'};
+  if ($choose) {
+    foreach (@$choose) {
+      if ($self->tz_known($_)) {
+        ### Time-TZ choose: $_
+        return ($self->{'tz'} = $_);
       }
     }
     my $name = $self->name;
@@ -96,7 +96,8 @@ sub tz_known {
   # any hour or minute different from GMT in any of 12 calendar months
   my $timet = time();
   local $Tie::TZ::TZ = $tz;
-  foreach my $mon (1 .. 12) {
+  foreach (1 .. 12) {
+    my $mon = $_;
     my $delta = $mon * 30 * 86400;
     my $t = $timet + $delta;
     my ($l_sec,$l_min,$l_hour,$l_mday,$l_mon,$l_year,$l_wday,$l_yday,$l_isdst)
@@ -124,7 +125,7 @@ sub call {
   my $self = shift;
   my $subr = shift;
   local $Tie::TZ::TZ = $self->tz;
-  return $subr->(@_);
+  return &$subr(@_);
 }
 
 1;
@@ -277,7 +278,7 @@ http://user42.tuxfamily.org/tie-tz/index.html
 
 =head1 COPYRIGHT
 
-Copyright 2007, 2008, 2009, 2010 Kevin Ryde
+Copyright 2007, 2008, 2009, 2010, 2011 Kevin Ryde
 
 Tie-TZ is free software; you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software

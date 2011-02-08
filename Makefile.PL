@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-# Copyright 2008, 2009, 2010 Kevin Ryde
+# Copyright 2008, 2009, 2010, 2011 Kevin Ryde
 
 # This file is part of Tie-TZ.
 #
@@ -19,7 +19,6 @@
 
 BEGIN { require 5 }
 use strict;
-use warnings;
 use ExtUtils::MakeMaker;
 use lib 'inc';
 use MyMakeMakerExtras;
@@ -34,15 +33,18 @@ MyMakeMakerExtras::WriteMakefile
                     'File::Spec' => 0,
                     'FindBin'    => 0,
                     'Test::More' => 0,
-                    'warnings'   => 0,
                    },
 
    AUTHOR       => 'Kevin Ryde <user42@zip.com.au>',
    LICENSE      => 'gpl',
    SIGN         => 1,
 
-   META_MERGE
-   => { resources
-        => { homepage => 'http://user42.tuxfamily.org/tie-tz/index.html' },
-      },
+   META_MERGE =>
+   { resources =>
+     { homepage => 'http://user42.tuxfamily.org/tie-tz/index.html' },
+
+     recommends => {
+                    'warnings' => 0,
+                   },
+   },
   );

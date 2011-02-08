@@ -10,6 +10,7 @@ debian/watch
 devel/byname.pl
 devel/datecalc.pl
 devel/ithreads.pl
+devel/leak.pl
 devel/lib/Test/POSIX/TzsetNotImplemented.pm
 devel/run.pl
 devel/speed-timezone.pl

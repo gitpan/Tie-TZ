@@ -1,4 +1,4 @@
-# Copyright 2008, 2009, 2010 Kevin Ryde
+# Copyright 2008, 2009, 2010, 2011 Kevin Ryde
 
 # This file is part of Tie-TZ.
 #
@@ -18,14 +18,13 @@
 package Tie::TZ;
 # require 5;
 use strict;
-use warnings;
 use Exporter;
 use vars qw($VERSION @ISA @EXPORT_OK %EXPORT_TAGS $TZ);
 
 # uncomment this to run the ### lines
 #use Smart::Comments;
 
-$VERSION = 8;
+$VERSION = 9;
 
 @ISA = ('Exporter');
 @EXPORT_OK = qw($TZ);
@@ -66,7 +65,7 @@ $tzset_if_available = sub {
 
 sub TIESCALAR {
   my ($class) = @_;
-  my $self = __PACKAGE__.' oops, magic not used!';
+  my $self = 'Tie::TZ oops, magic not used!';
   return bless \$self, $class;
 }
 
@@ -103,7 +102,7 @@ sub STORE {
   # when done in the unwind of a "local" value for $TZ within an eval{}
   # within a caught die().
   #
-  $tzset_if_available->();
+  &$tzset_if_available();
 }
 
 1;
@@ -237,7 +236,7 @@ http://user42.tuxfamily.org/tie-tz/index.html
 
 =head1 COPYRIGHT
 
-Copyright 2008, 2009, 2010 Kevin Ryde
+Copyright 2008, 2009, 2010, 2011 Kevin Ryde
 
 Tie-TZ is free software; you can redistribute it and/or modify it under the
 terms of the GNU General Public License as published by the Free Software

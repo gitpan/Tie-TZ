@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 
-# Copyright 2009, 2010 Kevin Ryde
+# Copyright 2009, 2010, 2011 Kevin Ryde
 
 # This file is part of Tie-TZ.
 #
@@ -21,7 +21,6 @@
 use POSIX ();
 package POSIX;
 use strict;
-use warnings;
 
 my $Tie_TZ_called = 0;
 my $Tie_TZ_argcount = 0;
@@ -40,7 +39,6 @@ eval { tzset() };
 
 package main;
 use strict;
-use warnings;
 use Test::More tests => 10;
 use Tie::TZ qw($TZ);
 

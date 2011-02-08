@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 
-# Copyright 2007, 2008, 2009, 2010 Kevin Ryde
+# Copyright 2007, 2008, 2009, 2010, 2011 Kevin Ryde
 
 # This file is part of Tie-TZ.
 #
@@ -19,7 +19,6 @@
 
 
 use strict;
-use warnings;
 use Test::More tests => 14;
 
 use lib 't';
@@ -53,12 +52,13 @@ require Time::TZ;
 
 {
   require POSIX;
-  foreach my $tz ('GMT',
-                  'EST-10',
-                  'first bogosity',
-                  'second bogosity',
-                  'America/New_York',
-                  'Europe/London') {
+  foreach ('GMT',
+           'EST-10',
+           'first bogosity',
+           'second bogosity',
+           'America/New_York',
+           'Europe/London') {
+    my $tz = $_;
     local $ENV{'TZ'} = $tz;
     diag "ctime ",POSIX::ctime(time())," in TZ='$tz'";
   }
@@ -88,23 +88,25 @@ require Time::TZ;
 #------------------------------------------------------------------------------
 # tz_known()
 
-foreach my $elem (['GMT', 1],
-                  ['UTC', 1],
-                  ['EST+10',    1],
-                  ['EST+10EDT', 1],
-                  ['CST+6CDT,M3.2.0,M11.1.0', 1],
-                  ['CST+6,M3.2.0,M11.1.0',    1],
-                  ['some bogosity', 0],
-                 ) {
+foreach (['GMT', 1],
+         ['UTC', 1],
+         ['EST+10',    1],
+         ['EST+10EDT', 1],
+         ['CST+6CDT,M3.2.0,M11.1.0', 1],
+         ['CST+6,M3.2.0,M11.1.0',    1],
+         ['some bogosity', 0],
+        ) {
+  my $elem = $_;
   my ($tz, $want) = @$elem;
   is (Time::TZ->tz_known($tz) ? 1 : 0, $want,
       "tz_known() $tz");
 }
 
-foreach my $tz ('Africa/Accra',
-                ':Africa/Accra',
-                ':/usr/share/zoneinfo/Africa/Accra',
-                'BlahBlah') {
+foreach ('Africa/Accra',
+         ':Africa/Accra',
+         ':/usr/share/zoneinfo/Africa/Accra',
+         'BlahBlah') {
+  my $tz = $_;
   diag "tz_known('$tz') is ",(Time::TZ->tz_known($tz) ? 1 : 0);
 }
 

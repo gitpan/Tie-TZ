@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               Tie-TZ
-version:            8
+version:            9
 abstract:           Tied TZ env var calling tzset() when changed.
 author:
     - Kevin Ryde <user42@zip.com.au>
@@ -16,7 +16,6 @@ requires:
     FindBin:     0
     perl:        5
     Test::More:  0
-    warnings:    0
 resources:
     homepage:  http://user42.tuxfamily.org/tie-tz/index.html
     license:   http://www.gnu.org/licenses/gpl.html
@@ -51,3 +50,5 @@ optional_features:
             YAML::Syck:          0
             YAML::Tiny:          0
             YAML::XS:            0
+recommends:
+    warnings:  0
